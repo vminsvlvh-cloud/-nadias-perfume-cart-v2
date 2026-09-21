@@ -1,0 +1,16 @@
+/* Editorial campaign assets. Commerce and language behavior remain shared. */
+.campaign-figure{margin:0;min-width:0;overflow:hidden}
+.campaign-image{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;background:#102d21}
+.campaign-figure figcaption{font-size:11px;color:#bdb3a7;line-height:1.6;padding:8px 0;text-align:start}
+.hero>.campaign-figure{align-self:center}
+.campaign-feature{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:64px;padding-block:56px;border-top:1px solid var(--line)}
+.campaign-feature:nth-of-type(even)>.campaign-figure{order:2}
+.campaign-copy{padding:24px 0;min-width:0}
+.campaign-copy h2{font-size:clamp(28px,3.2vw,46px);line-height:1.5;font-weight:400;margin:18px 0 30px;text-wrap:balance}
+.campaign-gallery{background:#0d281d}
+.campaign-gallery-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.campaign-gallery-grid .campaign-image{aspect-ratio:3/2}
+main.section>.wrap>.campaign-figure{max-width:900px;margin:0 auto 32px}
+.event-page .event-hero:has(>.campaign-figure){grid-template-columns:1fr 1.15fr;gap:40px}
+@media(max-width:900px){.campaign-feature,.event-page .event-hero:has(>.campaign-figure){grid-template-columns:1fr;gap:20px}.campaign-feature:nth-of-type(even)>.campaign-figure{order:0}.campaign-feature{padding-block:36px}.campaign-copy{padding:0 0 14px}.campaign-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.campaign-gallery-grid{gap:12px}.campaign-gallery .section-head{align-items:start;gap:18px;flex-direction:column}.hero>.campaign-figure{margin-top:8px}.campaign-copy h2{font-size:30px}}
