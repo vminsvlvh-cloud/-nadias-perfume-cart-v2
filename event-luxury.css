@@ -1,0 +1,59 @@
+/* Event page only — the storefront theme and commerce behavior stay shared. */
+.event-page{background:#081e17}
+.event-page main{overflow:clip}
+.event-page .event-intro{padding:76px 0 68px;background:radial-gradient(ellipse at 20% 30%,#21433280,transparent 60%)}
+.event-page .event-hero{grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
+.event-copy{max-width:630px}
+.event-page .event-badge{border:0;padding:0;margin-bottom:28px;gap:14px;align-items:center;font-size:12px;letter-spacing:.16em;color:#dcc397}
+.event-badge:before{content:"";height:1px;width:40px;background:#c9a568}
+.event-page h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(48px,5.6vw,78px);line-height:1.18;letter-spacing:-.035em;color:#f7f0e4;margin:0 0 26px;text-wrap:balance}
+html[dir=rtl] .event-page h1{font-family:Arial,sans-serif;line-height:1.4;font-weight:500;letter-spacing:0}
+.event-lead{max-width:490px;line-height:1.95;font-size:18px;color:#d5d2c6;margin:0 0 32px}
+.event-page .event-cta{min-height:56px;min-width:235px;padding:16px 23px;justify-content:space-between;gap:36px;background:linear-gradient(120deg,#e5cca0,#bc975b);border-color:#d5b57d;color:#13271e;font-weight:700;transition:transform .2s,box-shadow .2s}
+.event-page .event-cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px #0003}
+.event-caption{font-size:12px;line-height:1.8;color:#aaaF9f;margin-top:20px}
+.event-signature{position:relative;isolation:isolate;min-height:460px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:28px;padding:38px 24px;border:1px solid #c9a56840;border-radius:48% 48% 3px 3px;background:radial-gradient(ellipse at center,#2f5137a0,#0d281d40 70%)}
+.event-signature:before{content:"";position:absolute;inset:13px;border:1px solid #c9a56825;border-radius:48% 48% 2px 2px;z-index:-1}
+.signature-top{font-size:10px;letter-spacing:.22em;color:#dcc397;margin-top:25px}
+.signature-frame{width:min(100%,310px);aspect-ratio:1;display:grid;place-items:center}
+.signature-frame img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 12px 22px #0004)}
+.signature-bottom{font-size:12px;line-height:1.8;max-width:230px;color:#c4c6b8}
+html[dir=rtl] .signature-top,html[dir=rtl] .event-page .event-badge{letter-spacing:0}
+.event-journey{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #c9a56840;padding-block:32px;gap:32px}
+.event-journey>div{display:flex;gap:20px;align-items:flex-start;min-width:0}
+.journey-number{font:italic 27px Georgia,serif;color:#c9a568;line-height:1.5}
+.event-journey h2{margin:0 0 9px;font-size:17px;line-height:1.5;font-weight:500;color:#f0e6d3}
+.event-journey p{font-size:13px;line-height:1.85;color:#b7bdb0;margin:0}
+.event-page #eventBooking{padding:80px 0 90px;scroll-margin-top:90px}
+.event-page .checkout-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:42px;align-items:start}
+.event-page #eventForm{padding:clamp(24px,4vw,48px);background:#f5f0e5;border:0;box-shadow:0 24px 80px #0003}
+.event-page #eventForm .eyebrow{color:#795c31;font-size:10px;margin-bottom:14px}
+.event-page #eventForm h2{color:#183d2c;font-weight:400;font-size:clamp(30px,3vw,42px);line-height:1.4;margin:0}
+.form-intro{color:#636c60;font-size:14px;line-height:1.8;margin:12px 0 30px}
+.event-page .event-form label{font-size:13px;color:#304334;margin:20px 0 8px}
+.event-page .event-form input,.event-page .event-form select,.event-page .event-form textarea{background:#fffcf6;border:1px solid #d7d4c4;padding:14px;min-width:0;max-width:100%;color:#243a2c;transition:border-color .2s,box-shadow .2s}
+.event-page .event-form input:focus,.event-page .event-form select:focus,.event-page .event-form textarea:focus{outline:0;border-color:#80704b;box-shadow:0 0 0 3px #c9a56833}
+.event-page .event-form .two{gap:18px}
+.event-page .event-form textarea{min-height:115px;resize:vertical}
+.event-page .event-form .event-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.7;margin-block:22px}
+.event-page .event-consent input{flex-shrink:0;accent-color:#173e2c;width:17px;height:17px;margin-top:3px;padding:0}
+.event-page #eventForm button[type=submit]{width:100%;min-height:54px;background:#183d2c;color:#f9f2e4;border:1px solid #183d2c;font-weight:700}
+.event-page #eventForm button[type=submit]:hover{background:#254e39}
+.event-page #eventForm button:disabled{opacity:.6;cursor:wait}
+.event-concierge{padding:30px 0 25px;position:sticky;top:125px}
+.concierge-star{font-size:52px;color:#c9a568;display:block;margin-bottom:28px}
+.event-concierge .eyebrow{font-size:11px;margin-bottom:18px}
+.event-page .event-concierge h2{font-weight:400;line-height:1.4;font-size:38px;color:#f3e7cf;margin-bottom:24px}
+.event-concierge>p{font-size:16px;line-height:1.95;color:#bdc5b7}
+.concierge-note{border-top:1px solid #c9a56840;margin-top:34px;padding-top:26px}
+.concierge-note>span{font-size:13px;color:#e0c79b}
+.concierge-note p{font-size:13px;line-height:1.9;color:#aab6a6}
+.concierge-phone{display:flex;flex-direction:column;gap:12px;margin-top:32px;align-items:flex-start}
+.concierge-phone span{font-size:12px;color:#bcc5b5}
+.concierge-phone bdi{font-size:24px;color:#e6cc9f;letter-spacing:.04em}
+.event-page .floating-contact{padding:7px;border:1px solid #c9a56850;border-radius:38px;background:#0b251ee8;backdrop-filter:blur(14px);box-shadow:0 8px 32px #0005}
+.event-page .floating-booking{border-radius:26px;font-size:13px;border:0;min-height:48px;background:#dac092;padding-inline:21px}
+.event-page .whatsapp-float{min-height:48px;border:0;background:transparent;box-shadow:none;padding-inline:13px;font-size:13px}
+@media(max-width:900px){.event-page .event-hero{grid-template-columns:1fr 1fr;gap:28px}.event-signature{min-height:390px;padding:25px 18px}.event-page .checkout-grid{grid-template-columns:1fr;gap:24px}.event-concierge{position:static;padding:20px 10px}.event-journey{gap:22px}.event-journey>div{gap:12px}}
+@media(max-width:600px){.event-page .event-intro{padding:44px 0 35px}.event-page .event-hero{grid-template-columns:1fr;gap:34px}.event-page h1{font-size:46px}.event-page .event-badge{margin-bottom:18px}.event-lead{font-size:16px}.event-signature{min-height:0;max-width:360px;width:100%;margin-inline:auto;gap:12px;padding:30px 25px}.signature-frame{width:220px}.signature-top{margin-top:12px}.event-journey{grid-template-columns:1fr;padding-block:25px;gap:24px}.event-journey>div{gap:18px}.event-page #eventBooking{padding:44px 0 55px}.event-page .event-form .two{grid-template-columns:1fr;gap:0}.event-page .floating-contact{gap:3px;padding:5px;right:10px;max-width:calc(100vw - 20px)}.event-page .floating-booking{padding-inline:14px}.event-page .whatsapp-float{padding-inline:10px}.event-page .event-concierge h2{font-size:32px}}
+@media(prefers-reduced-motion:reduce){.event-page *{scroll-behavior:auto!important;transition:none!important}}
