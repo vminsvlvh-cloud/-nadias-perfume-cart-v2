@@ -1,0 +1,18 @@
+
+:root{--bg:#0b1712;--panel:#11251d;--gold:#caa56b;--paper:#fffaf2;--ink:#241c17;--muted:#796f66}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#fff}a{text-decoration:none;color:inherit}
+.wrap{width:min(1180px,92%);margin:auto}header{position:sticky;top:0;background:#09130fee;border-bottom:1px solid #caa56b44;z-index:20}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0}.brand{font:700 28px Georgia,serif;color:var(--gold)}
+nav{display:flex;gap:16px}.btn{border:1px solid var(--gold);background:transparent;color:#fff;padding:10px 14px;cursor:pointer}.gold{background:var(--gold);color:#111}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;padding:70px 0}.hero h1,.section h2{font-family:Georgia,serif;color:var(--gold)}
+.hero h1{font-size:clamp(48px,8vw,88px);line-height:.95;margin:0 0 18px}.hero-card{min-height:340px;background:linear-gradient(145deg,#18392c,#0d1e17);border:1px solid #caa56b55;display:grid;place-items:center;text-align:center;padding:28px}
+.section{padding:55px 0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card,.panel{background:var(--paper);color:var(--ink);border:1px solid #caa56b44;padding:18px}
+.placeholder{height:130px;background:linear-gradient(135deg,#173126,#2a5340);display:grid;place-items:center;color:var(--gold);font:700 34px Georgia,serif}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+label{display:block;margin:10px 0 5px;font-weight:700}input,textarea{width:100%;padding:12px;border:1px solid #cbb89f}textarea{min-height:100px}
+.notice{background:var(--gold);color:#152118;text-align:center;padding:9px;font-weight:700}.hidden{display:none!important}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,100%);background:#fffaf2;color:#241c17;z-index:50;padding:22px;overflow:auto}
+.cart-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid #ddd}
+footer{border-top:1px solid #caa56b33;padding:30px 0;color:#cfc7bd}
+@media(max-width:900px){.hero,.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}nav{display:none}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
