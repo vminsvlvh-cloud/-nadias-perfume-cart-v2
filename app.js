@@ -10,13 +10,13 @@ function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
 function syncBrand(){const file='nadias-logo-transparent.png';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
 function applyLang(){
-  translatePage();syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout();
+  translatePage();syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout();updateWhatsApp();
 }
 document.addEventListener('languagechange',applyLang);
 function productImage(p){return p.image_url||p.image||''}
-async function loadProducts(){let rows=[];if(sb){const {data,error}=await sb.from('products').select('*').eq('active',true).order('created_at');if(!error&&data)rows=data}if(!rows.length)rows=(window.NADIA_PRODUCTS||[]).map(x=>({...x,price:null,stock:null,image_url:null}));allProducts=rows;renderProducts();renderCart();renderProductPage();renderCheckout()}
+async function loadProducts(){let rows=[];if(sb){const {data,error}=await sb.from('products').select('*').eq('active',true).order('created_at');if(!error&&data)rows=data}if(!rows.length)rows=(window.NADIA_PRODUCTS||[]).map(x=>({...x,price:null,stock:null,image_url:null}));allProducts=rows;renderProducts();renderCart();renderProductPage();renderCheckout();updateWhatsApp()}
 function filteredProducts(){let rows=[...allProducts];const q=($('#searchProducts')?.value||'').trim().toLowerCase();const filter=$('#productFilter')?.value||'all';if(q)rows=rows.filter(p=>[p.name_ar,p.name_en,p.description_ar,p.description_en,p.slug].some(v=>String(v||'').toLowerCase().includes(q)));if(filter==='available')rows=rows.filter(p=>p.stock==null||Number(p.stock)>0);if(filter==='wishlist')rows=rows.filter(p=>wishlist.includes(p.slug));return rows}
-function renderProducts(){const el=$('#productGrid');if(!el)return;const rows=filteredProducts();el.innerHTML=rows.length?rows.map(p=>{const img=productImage(p);const out=p.stock!=null&&Number(p.stock)<=0;return `<article class="card"><button class="wish ${wishlist.includes(p.slug)?'active':''}" onclick="toggleWish('${safe(p.slug)}')" aria-label="${t('المفضلة','Wishlist')}" aria-pressed="${wishlist.includes(p.slug)}">♥</button><a href="product.html?slug=${encodeURIComponent(p.slug)}"><div class="product-media">${img?`<img src="${safe(img)}" alt="${safe(pname(p))}">`:safe(pname(p).slice(0,1))}</div><h3>${safe(pname(p))}</h3></a><div class="meta">${money(p.price)}</div><div class="stock ${out?'out':''}">${out?t('غير متوفر حالياً','Currently unavailable'):t('متوفر حسب المخزون','Availability subject to stock')}</div><div class="row"><button class="btn gold" ${out?'disabled':''} onclick="addToCart('${safe(p.slug)}')">${t('أضف للسلة','Add to cart')}</button><a class="btn soft" href="product.html?slug=${encodeURIComponent(p.slug)}">${t('التفاصيل','Details')}</a></div></article>`}).join(''):`<div class="panel">${t('لا توجد نتائج','No products found')}</div>`}
+function renderProducts(){const el=$('#productGrid');if(!el)return;const rows=filteredProducts();el.innerHTML=rows.length?rows.map(p=>{const img=productImage(p);const out=p.stock!=null&&Number(p.stock)<=0;return `<article class="card"><button class="wish ${wishlist.includes(p.slug)?'active':''}" onclick="toggleWish('${safe(p.slug)}')" aria-label="${t('المفضلة','Wishlist')}" aria-pressed="${wishlist.includes(p.slug)}">♥</button><a href="product.html?slug=${encodeURIComponent(p.slug)}"><div class="product-media">${img?`<img src="${safe(img)}" alt="${safe(pname(p))}">`:safe(pname(p).slice(0,1))}</div><h3>${safe(pname(p))}</h3></a><div class="meta">${money(p.price)}</div><div class="stock ${out?'out':''}">${out?t('غير متوفر حالياً','Currently unavailable'):t('متوفر حسب المخزون','Availability subject to stock')}</div><div class="row"><button class="btn gold" ${out?'disabled':''} onclick="addToCart('${safe(p.slug)}')">${t('أضف للسلة','Add to cart')}</button><a class="btn soft" href="product.html?slug=${encodeURIComponent(p.slug)}">${t('التفاصيل','Details')}</a><a class="btn soft product-inquiry" href="${safe(whatsappUrl(p))}" target="_blank" rel="noopener">${t('استفسر عبر واتساب','Ask on WhatsApp')}</a></div></article>`}).join(''):`<div class="panel">${t('لا توجد نتائج','No products found')}</div>`}
 function toggleWish(slug){wishlist=wishlist.includes(slug)?wishlist.filter(x=>x!==slug):[...wishlist,slug];localStorage.setItem('nadia_wishlist',JSON.stringify(wishlist));renderProducts();renderWishlistCount()}
 function renderWishlistCount(){$$('[data-wish-count]').forEach(x=>x.textContent=wishlist.length)}
 function addToCart(slug,qty=1){const p=allProducts.find(x=>x.slug===slug);if(p?.stock!=null&&Number(p.stock)<=0)return toast(t('المنتج غير متوفر','Product unavailable'));const f=cart.find(x=>x.slug===slug);if(f)f.qty+=Number(qty)||1;else cart.push({slug,qty:Number(qty)||1});saveCart();openCart();toast(t('تمت الإضافة للسلة','Added to bag'))}
@@ -67,3 +67,23 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 
+
+
+// Only public product names are included; form contents are never copied to WhatsApp.
+function whatsappUrl(product){
+  const name=product?pname(product):'';
+  const isEvent=location.pathname.endsWith('/event-cart.html');
+  const message=name?t(`مرحباً عطور نادية، أود الاستفسار عن عطر «${name}».`,`Hello Nadia’s Perfume Cart, I would like to ask about “${name}”.`):
+    isEvent?t('مرحباً عطور نادية، أود الاستفسار عن حجز عربة العطور لمناسبتي.','Hello Nadia’s Perfume Cart, I would like to enquire about booking the perfume cart for my event.'):
+    t('مرحباً عطور نادية، أود الاستفسار عن العطور.','Hello Nadia’s Perfume Cart, I would like to enquire about your perfumes.');
+  return 'https://wa.me/201112564000?text='+encodeURIComponent(message);
+}
+function updateWhatsApp(){
+  const link=document.getElementById('floatingWhatsApp');if(!link)return;
+  const slug=location.pathname.endsWith('/product.html')?new URLSearchParams(location.search).get('slug'):null;
+  const product=slug?allProducts.find(p=>p.slug===slug):null;
+  link.href=whatsappUrl(product);
+  const label=product?t('استفسر عن هذا العطر','Ask about this perfume'):t('تواصل عبر واتساب','Chat on WhatsApp');
+  link.setAttribute('aria-label',label);link.title=label;
+  document.getElementById('floatingWhatsAppLabel').textContent=t('واتساب','WhatsApp');
+}

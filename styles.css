@@ -64,3 +64,15 @@ html[dir=rtl] .eyebrow{letter-spacing:normal}
   .mobile-menu{inset-inline:unset;left:auto;right:0;overflow-y:auto}
 }
 @media(max-width:560px){header .nav{gap:8px}.hero h1{font-size:38px}}
+
+/* Persistent contact actions stay beneath open menus and shopping drawers. */
+.floating-contact{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px)}
+.whatsapp-float{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 18px;border-radius:28px;background:#075e54;color:#fff;border:1px solid #fff6;box-shadow:0 5px 20px #0005;font-weight:700;white-space:nowrap}
+.whatsapp-float svg{width:26px;height:26px;flex-shrink:0}
+.whatsapp-float:hover{background:#064c44}
+.whatsapp-float:focus-visible,.floating-booking:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.floating-booking{box-shadow:0 5px 20px #0005;min-height:52px}
+body:has(.floating-contact) footer{padding-bottom:110px}
+body:has(.floating-contact) .toast{bottom:90px}
+#eventBooking{scroll-margin-top:110px}
+@media(max-width:380px){.floating-contact{gap:6px}.whatsapp-float{padding:10px 12px}.floating-booking{padding:10px;font-size:13px}}
