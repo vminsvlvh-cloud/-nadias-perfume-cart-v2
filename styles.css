@@ -42,3 +42,11 @@ footer .brand-logo{width:180px;height:auto;max-width:100%}
 @media(max-width:900px){header .brand-logo{width:104px;height:70px}}
 @media(max-width:560px){header .brand-logo{width:95px;height:64px}.hero .brand-logo-transparent{width:min(320px,100%)}}
 
+
+
+/* Follow the selected document language without changing the visual theme. */
+input,textarea,select{direction:inherit;text-align:start}
+input[type=email],input[type=tel],input[type=url]{direction:ltr;text-align:start}
+.mobile-menu,.cart-drawer{inset:auto;inset-block:0;inset-inline-end:0}
+html[dir=rtl] .eyebrow{letter-spacing:normal}
+[data-language-toggle]{min-width:44px;font-weight:700;direction:ltr}
