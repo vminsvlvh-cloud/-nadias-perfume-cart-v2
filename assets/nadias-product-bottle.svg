@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900" role="img" aria-label="Nadia's Perfume Cart bottle">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7f1e8"/><stop offset="1" stop-color="#dfc9a6"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".92"/><stop offset=".45" stop-color="#d7c2a5" stop-opacity=".62"/><stop offset="1" stop-color="#9a6e45" stop-opacity=".55"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8b6429"/><stop offset=".5" stop-color="#e0c07b"/><stop offset="1" stop-color="#8b6429"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".22"/></filter>
+</defs>
+<rect width="800" height="900" fill="url(#bg)"/>
+<ellipse cx="400" cy="805" rx="220" ry="34" fill="#6c4b2c" opacity=".18"/>
+<g filter="url(#shadow)">
+ <rect x="305" y="110" width="190" height="190" rx="26" fill="#151515"/>
+ <rect x="330" y="285" width="140" height="55" rx="8" fill="url(#gold)"/>
+ <rect x="205" y="325" width="390" height="465" rx="68" fill="url(#glass)" stroke="#fff" stroke-opacity=".7" stroke-width="8"/>
+ <rect x="255" y="455" width="290" height="205" rx="4" fill="#f8f4ec" stroke="#c9a968" stroke-width="5"/>
+ <path d="M285 490h230M285 625h230" stroke="#c9a968" stroke-width="2"/>
+ <text x="400" y="525" text-anchor="middle" font-family="Georgia,serif" font-size="24" letter-spacing="3" fill="#111">NADIA'S</text>
+ <text x="400" y="558" text-anchor="middle" font-family="Georgia,serif" font-size="22" letter-spacing="2" fill="#111">PERFUME CART</text>
+ <text x="400" y="600" text-anchor="middle" font-family="Georgia,serif" font-size="14" letter-spacing="4" fill="#8b6429">FRAGRANCE</text>
+</g>
+</svg>
