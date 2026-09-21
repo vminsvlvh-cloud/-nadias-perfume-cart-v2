@@ -1,0 +1,8 @@
+{
+  "name": "Nadia’s Perfume Cart",
+  "short_name": "Nadia’s",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#071811",
+  "theme_color": "#071811"
+}
