@@ -24,3 +24,8 @@ values
   ('essence','إسنس','Essence')
 on conflict (slug) do update
 set name_ar=excluded.name_ar, name_en=excluded.name_en;
+
+-- Use the verified official bottle photo until individual product photography is supplied.
+update public.products
+set image_url='assets/products/nadias-product-bottle.webp'
+where image_url is null or btrim(image_url)='';

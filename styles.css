@@ -102,3 +102,9 @@ body.ui-locked{overflow:hidden}
   .floating-contact{flex-wrap:wrap;justify-content:flex-end}
   .floating-booking,.whatsapp-float{min-height:46px}
 }
+
+/* Official product image fallback and per-perfume identity */
+.product-media{position:relative}
+.product-image-name{position:absolute;inset-inline:12px;bottom:12px;padding:8px 11px;background:#071811e8;color:var(--gold);border:1px solid #c9a56899;text-align:center;font:700 15px Georgia,serif;letter-spacing:.04em;box-shadow:0 5px 18px #0006;backdrop-filter:blur(6px)}
+.product-image-name--detail{inset-inline:24px;bottom:24px;padding:12px 16px;font-size:22px}
+@media(max-width:560px){.product-image-name{inset-inline:7px;bottom:7px;font-size:13px;padding:6px}.product-image-name--detail{inset-inline:14px;bottom:14px;font-size:18px;padding:9px}}

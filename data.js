@@ -100,3 +100,5 @@ window.NADIA_PRODUCTS = [
     "name_en": "Essence"
   }
 ];
+
+window.NADIA_PRODUCTS.forEach(product=>{if(!product.image)product.image='assets/products/nadias-product-bottle.webp'});
