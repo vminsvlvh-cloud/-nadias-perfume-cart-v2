@@ -1,0 +1,9 @@
+NADIA'S PERFUME CART — TRANSPARENT LOGO UPDATE
+
+Upload/replace these files in the V2 GitHub repository.
+The new file nadias-logo-transparent.png is the approved transparent master logo.
+HTML pages were updated to use it instead of the background JPG logos.
+styles.css includes responsive sizing for desktop/mobile and footer.
+
+No Supabase SQL changes are required for this logo update.
+Railway should redeploy automatically after the GitHub commit.
