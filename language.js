@@ -12,6 +12,13 @@ function translatePage() {
   document.querySelectorAll('[data-aria-ar][data-aria-en]').forEach(el => {
     el.setAttribute('aria-label', t(el.dataset.ariaAr, el.dataset.ariaEn));
   });
+  document.querySelectorAll('[data-alt-ar][data-alt-en]').forEach(el => {
+    el.setAttribute('alt', t(el.dataset.altAr, el.dataset.altEn));
+  });
+  const description = t('عطور نادية — عطور وهدايا وعربة عطور للمناسبات','Nadia’s Perfume Cart — perfumes, gifts and a bespoke event cart');
+  document.querySelectorAll('meta[name="description"],meta[property="og:description"]').forEach(el => el.setAttribute('content', description));
+  const ogTitle = document.querySelector('title')?.textContent || t('عطور نادية','Nadia’s Perfume Cart');
+  document.querySelectorAll('meta[property="og:title"]').forEach(el => el.setAttribute('content', ogTitle));
   document.querySelectorAll('[data-language-toggle]').forEach(el => {
     el.textContent = t('EN', 'AR');
     el.setAttribute('aria-label', t('Switch to English', 'التبديل إلى العربية'));

@@ -92,3 +92,13 @@ html[dir=ltr] .mobile-menu,html[dir=ltr] .cart-drawer{box-shadow:20px 0 60px #00
   html[dir=ltr] header .nav>.actions{grid-column:3;grid-row:1;justify-self:end}
   .mobile-menu{left:auto;right:auto;inset-inline-end:0}
 }
+
+/* Production drawer and modal interaction */
+body.ui-locked{overflow:hidden}
+.ui-backdrop{position:fixed;inset:0;z-index:70;border:0;background:#0009;cursor:pointer}
+.mobile-menu,.cart-drawer{overscroll-behavior:contain}
+.mobile-menu:focus-within,.cart-drawer:focus-within{outline:none}
+@media(max-width:560px){
+  .floating-contact{flex-wrap:wrap;justify-content:flex-end}
+  .floating-booking,.whatsapp-float{min-height:46px}
+}
