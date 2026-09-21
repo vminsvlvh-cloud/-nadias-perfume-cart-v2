@@ -4,13 +4,13 @@ let cart=JSON.parse(localStorage.getItem('nadia_cart')||'[]');
 let wishlist=JSON.parse(localStorage.getItem('nadia_wishlist')||'[]');
 let allProducts=[];
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const money=v=>v==null?t('السعر يضاف من لوحة الإدارة','Price added from admin'):`${Number(v).toLocaleString(lang==='ar'?'ar-EG':'en-US')} EGP`;
+const money=v=>v==null?t('السعر يضاف من لوحة الإدارة','Price added from admin'):new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-EG',{style:'currency',currency:'EGP',maximumFractionDigits:2}).format(Number(v));
 const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(p.name_en||p.name_ar);
 function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
 function syncBrand(){const file='nadias-logo-transparent.png';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
 function applyLang(){
-  translatePage();syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout();updateWhatsApp();
+  syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout();updateWhatsApp();
 }
 document.addEventListener('languagechange',applyLang);
 function productImage(p){return p.image_url||p.image||''}

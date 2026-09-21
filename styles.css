@@ -76,3 +76,19 @@ body:has(.floating-contact) footer{padding-bottom:110px}
 body:has(.floating-contact) .toast{bottom:90px}
 #eventBooking{scroll-margin-top:110px}
 @media(max-width:380px){.floating-contact{gap:6px}.whatsapp-float{padding:10px 12px}.floating-booking{padding:10px;font-size:13px}}
+
+
+/* Bilingual direction repair */
+input[type=email],input[type=tel],input[type=url],input[type=number],input[type=date],input[type=time]{direction:ltr;text-align:start}
+.floating-contact{right:auto;inset-inline-end:max(16px,env(safe-area-inset-right))}
+html[dir=rtl] .mobile-menu,html[dir=rtl] .cart-drawer{box-shadow:-20px 0 60px #0008}
+html[dir=ltr] .mobile-menu,html[dir=ltr] .cart-drawer{box-shadow:20px 0 60px #0008}
+@media(max-width:900px){
+  header .nav{direction:inherit}
+  header .nav>a{grid-column:2;grid-row:1}
+  html[dir=rtl] header .nav>.actions{grid-column:1;grid-row:1}
+  html[dir=rtl] header .nav>.menu-toggle{grid-column:3;grid-row:1}
+  html[dir=ltr] header .nav>.menu-toggle{grid-column:1;grid-row:1;justify-self:start}
+  html[dir=ltr] header .nav>.actions{grid-column:3;grid-row:1;justify-self:end}
+  .mobile-menu{left:auto;right:auto;inset-inline-end:0}
+}

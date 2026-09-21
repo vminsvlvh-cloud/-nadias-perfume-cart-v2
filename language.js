@@ -24,15 +24,14 @@ function toggleLang() {
 function setLang(value) {
   lang = value === 'en' ? 'en' : 'ar';
   try { localStorage.setItem('nadia_lang', lang); } catch (_) {}
-  translatePage();
   document.dispatchEvent(new Event('languagechange'));
 }
 translatePage();
+document.addEventListener('languagechange', translatePage);
 document.addEventListener('DOMContentLoaded', translatePage);
 window.addEventListener('storage', event => {
   if (event.key === 'nadia_lang') {
     lang = event.newValue === 'en' ? 'en' : 'ar';
-    translatePage();
     document.dispatchEvent(new Event('languagechange'));
   }
 });
