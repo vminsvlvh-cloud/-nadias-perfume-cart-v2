@@ -18,6 +18,9 @@ function translatePage() {
     el.setAttribute('lang', t('en', 'ar'));
   });
 }
+function toggleLang() {
+  setLang(lang === 'ar' ? 'en' : 'ar');
+}
 function setLang(value) {
   lang = value === 'en' ? 'en' : 'ar';
   try { localStorage.setItem('nadia_lang', lang); } catch (_) {}
@@ -33,3 +36,4 @@ window.addEventListener('storage', event => {
     document.dispatchEvent(new Event('languagechange'));
   }
 });
+
