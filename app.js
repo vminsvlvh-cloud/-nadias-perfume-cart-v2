@@ -10,7 +10,7 @@ const money=v=>v==null?t('السعر يضاف من لوحة الإدارة','Pri
 const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(p.name_en||p.name_ar);
 function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
-function syncBrand(){const file=lang==='ar'?'logo-ar.jpg':'logo-en.jpg';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
+function syncBrand(){const file='nadias-logo-transparent.png';$$('[data-brand-logo]').forEach(i=>{i.src=file;i.alt=lang==='ar'?'عطور نادية':"Nadia's Perfume Cart"})}
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';$$('[data-ar][data-en]').forEach(el=>el.textContent=el.dataset[lang]);syncBrand();renderProducts();renderCart();renderWishlistCount();renderProductPage();renderCheckout()}
 function setLang(v){lang=v;localStorage.setItem('nadia_lang',v);applyLang()}
 function productImage(p){return p.image_url||p.image||''}
@@ -67,3 +67,4 @@ document.addEventListener('DOMContentLoaded',()=>{
     const slug=new URLSearchParams(location.search).get('slug'); rememberViewed(slug);
   }
 });
+
