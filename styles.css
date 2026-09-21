@@ -67,3 +67,27 @@ footer img[src="nadias-logo-transparent.png"]{
     max-width:240px;
   }
 }
+
+/* V2 header/hero polish */
+header .brand img[src="nadias-logo-transparent.png"],
+.site-header .brand img[src="nadias-logo-transparent.png"]{
+  height:78px !important;
+  width:auto !important;
+  max-width:260px !important;
+  object-fit:contain !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.hero img[src="nadias-logo-transparent.png"]{
+  display:none !important; /* avoid repeating the brand mark in the hero */
+}
+@media (max-width:760px){
+  header .brand img[src="nadias-logo-transparent.png"],
+  .site-header .brand img[src="nadias-logo-transparent.png"]{
+    height:64px !important;
+    max-width:220px !important;
+  }
+  header .wrap, .site-header .wrap{
+    align-items:center;
+  }
+}
