@@ -89,3 +89,18 @@ end $$;
 
 revoke all on function public.create_store_order(jsonb) from public;
 grant execute on function public.create_store_order(jsonb) to anon, authenticated;
+
+
+-- Editable storefront content used by the Admin home-page editor.
+create table if not exists public.site_content (
+  key text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.site_content enable row level security;
+drop policy if exists "public read site content" on public.site_content;
+create policy "public read site content" on public.site_content for select to anon, authenticated using (true);
+drop policy if exists "admin insert site content" on public.site_content;
+create policy "admin insert site content" on public.site_content for insert to authenticated with check (public.is_admin());
+drop policy if exists "admin update site content" on public.site_content;
+create policy "admin update site content" on public.site_content for update to authenticated using (public.is_admin()) with check (public.is_admin());
