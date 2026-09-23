@@ -101,4 +101,15 @@ window.NADIA_PRODUCTS = [
   }
 ];
 
-window.NADIA_PRODUCTS.forEach(product=>{if(!product.image)product.image='assets/products/nadias-product-bottle.webp'});
+window.NADIA_PRODUCT_GALLERY = [
+  '574059516_1790146252538736.jpeg',
+  '862600568_1790146247108323.jpeg',
+  '899942807_1790146229818310.jpeg',
+  '65178432_1790146327567901.jpeg',
+  '158379733_1790146335114179.jpeg',
+  '238285533_1790146351210496.jpeg',
+  '168549998_1790146360830918.jpeg'
+];
+window.NADIA_PRODUCTS.forEach((product,index)=>{
+  if(!product.image) product.image=window.NADIA_PRODUCT_GALLERY[index % window.NADIA_PRODUCT_GALLERY.length];
+});
