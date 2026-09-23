@@ -131,3 +131,9 @@ footer{background:rgba(0,0,0,.1)}
 @media(max-width:900px){.hero{min-height:auto;padding:46px 0;gap:34px}.section{padding:70px 0}.product-media{height:260px}}
 @media(max-width:560px){.wrap{width:91%}.nav{min-height:68px}.hero{padding:34px 0 48px}.hero h1{font-size:clamp(36px,11vw,48px);line-height:1.2}.hero .row .btn{flex:1}.section{padding:58px 0}.section-head{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr;gap:12px}.product-media{height:190px}.card{border-radius:16px}.card h3{font-size:18px}.campaign-figure{border-radius:18px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Homepage event-cart real photography */
+.home-event-gallery{display:grid;grid-template-columns:1.45fr .75fr;gap:10px;align-items:stretch}
+.home-event-gallery .campaign-image{width:100%;height:100%;object-fit:cover}
+.home-event-secondary{min-height:100%}
+@media(max-width:700px){.home-event-gallery{grid-template-columns:1fr 1fr}.home-event-main{grid-column:1 / 3;aspect-ratio:4/3}.home-event-secondary{grid-column:1 / 3;aspect-ratio:16/9}}
