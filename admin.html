@@ -1,11 +1,153 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title data-ar="إدارة نادية" data-en="Nadia’s Admin">إدارة نادية</title><script>(function(){var l='ar';try{l=localStorage.getItem('nadia_lang')==='en'?'en':'ar'}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr'})()</script><link rel="stylesheet" href="styles.css?v=20260921-product-images-6"><script src="language.js?v=20260921-product-images-6"></script></head><body class="admin-body"><button class="btn" data-language-toggle onclick="toggleLang()">EN</button>
-<div id="login" class="login-box"><h1 data-ar="إدارة نادية" data-en="Nadia’s Admin">إدارة نادية</h1><form onsubmit="login(event)"><label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label><input name="email" type="email" required><label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label><input name="password" type="password" required><button class="btn gold" type="submit" style="margin-top:15px" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</button><p id="loginMsg"></p></form></div>
-<div id="app" class="admin-shell hidden"><div class="admin-top"><div><h1 data-ar="إدارة نادية" data-en="Nadia’s Admin">إدارة نادية</h1><small data-ar="المنتجات والإعلان والطلبات" data-en="Products, announcement and orders">المنتجات والإعلان والطلبات</small></div><button class="btn danger" onclick="logout()" data-ar="تسجيل الخروج" data-en="Sign out">تسجيل الخروج</button></div>
-<div id="productEditor" class="admin-card hidden"><h2 data-ar="المنتج" data-en="Product">المنتج</h2><form id="productForm" onsubmit="saveProduct(event)"><input id="pid" name="id" type="hidden"><div class="admin-grid"><div><label data-ar="معرّف الرابط" data-en="Slug">معرّف الرابط</label><input name="slug" required></div><div><label data-ar="السعر بالجنيه المصري" data-en="Price EGP">السعر بالجنيه المصري</label><input name="price" type="number" min="0" step=".01"></div><div><label data-ar="الاسم بالعربية" data-en="Arabic name">الاسم بالعربية</label><input name="name_ar" required></div><div><label data-ar="الاسم بالإنجليزية" data-en="English name">الاسم بالإنجليزية</label><input name="name_en" required></div><div><label data-ar="المخزون" data-en="Stock">المخزون</label><input name="stock" type="number" min="0"></div><div><label data-ar="رابط الصورة" data-en="Image URL">رابط الصورة</label><input name="image_url"></div></div><label data-ar="الوصف بالعربية" data-en="Arabic description">الوصف بالعربية</label><textarea name="description_ar"></textarea><label data-ar="الوصف بالإنجليزية" data-en="English description">الوصف بالإنجليزية</label><textarea name="description_en"></textarea><label><input name="active" type="checkbox" style="width:auto"> <span data-ar="نشط" data-en="Active">نشط</span></label><div class="row"><button class="btn gold" data-ar="حفظ" data-en="Save">حفظ</button><button type="button" onclick="document.getElementById('productEditor').classList.add('hidden')" data-ar="إلغاء" data-en="Cancel">إلغاء</button></div></form></div>
-<div class="admin-card"><div class="admin-top"><h2 data-ar="المنتجات" data-en="Products">المنتجات</h2><button class="btn gold" onclick="newProduct()" data-ar="+ إضافة منتج" data-en="+ Add product">+ إضافة منتج</button></div><div style="overflow:auto"><table class="admin-table"><thead><tr><th data-ar="الاسم" data-en="Name">الاسم</th><th data-ar="السعر" data-en="Price">السعر</th><th data-ar="المخزون" data-en="Stock">المخزون</th><th data-ar="التوفر" data-en="Availability">التوفر</th><th></th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
-<div class="admin-card"><h2 data-ar="محتوى الصفحة الرئيسية" data-en="Home page content">محتوى الصفحة الرئيسية</h2><p data-ar="عدّل العنوان الرئيسي والنصوص والصور من هنا." data-en="Edit the home headline, copy and images here.">عدّل العنوان الرئيسي والنصوص والصور من هنا.</p><form id="homeForm" onsubmit="saveHomeContent(event)"><div class="admin-grid"><div><label data-ar="العنوان الرئيسي بالعربية" data-en="Arabic hero title">العنوان الرئيسي بالعربية</label><input id="homeHeroAr"></div><div><label data-ar="العنوان الرئيسي بالإنجليزية" data-en="English hero title">العنوان الرئيسي بالإنجليزية</label><input id="homeHeroEn"></div><div><label data-ar="رابط صورة الهوم" data-en="Home image URL">رابط صورة الهوم</label><input id="homeHeroImage" type="url" placeholder="https://..."></div><div><label data-ar="عنوان قسم الهدايا بالعربية" data-en="Arabic gifts title">عنوان قسم الهدايا بالعربية</label><input id="homeGiftsAr"></div><div><label data-ar="عنوان قسم الهدايا بالإنجليزية" data-en="English gifts title">عنوان قسم الهدايا بالإنجليزية</label><input id="homeGiftsEn"></div></div><button class="btn gold" type="submit" data-ar="حفظ الصفحة الرئيسية" data-en="Save home page">حفظ الصفحة الرئيسية</button></form></div><div class="admin-card"><h2 data-ar="الإعلان" data-en="Announcement">الإعلان</h2><form onsubmit="saveAnnouncement(event)"><input id="annId" type="hidden"><label data-ar="العربية" data-en="Arabic">العربية</label><input id="annAr"><label data-ar="الإنجليزية" data-en="English">الإنجليزية</label><input id="annEn"><label><input id="annActive" type="checkbox" style="width:auto"> <span data-ar="نشط" data-en="Active">نشط</span></label><br><button class="btn gold" data-ar="حفظ الإعلان" data-en="Save announcement">حفظ الإعلان</button></form></div>
-<div class="admin-card"><h2 data-ar="طلبات عربة المناسبات" data-en="Bespoke Event Cart Requests">طلبات عربة المناسبات</h2><p data-ar="طلبات تنسيق الأعراس والمناسبات الفاخرة." data-en="Wedding &amp; luxury event coordination requests.">طلبات تنسيق الأعراس والمناسبات الفاخرة.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th data-ar="رقم الطلب" data-en="Reference">رقم الطلب</th><th data-ar="العميل" data-en="Client">العميل</th><th data-ar="المناسبة" data-en="Event">المناسبة</th><th data-ar="التاريخ / المدينة" data-en="Date / City">التاريخ / المدينة</th><th data-ar="الضيوف" data-en="Guests">الضيوف</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="المتطلبات" data-en="Requirements">المتطلبات</th></tr></thead><tbody id="eventsBody"></tbody></table></div></div>
-<div class="admin-card"><h2 data-ar="الطلبات" data-en="Orders">الطلبات</h2><div style="overflow:auto"><table class="admin-table"><thead><tr><th data-ar="الطلب" data-en="Order">الطلب</th><th data-ar="العميل" data-en="Customer">العميل</th><th data-ar="الإجمالي" data-en="Total">الإجمالي</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="التاريخ" data-en="Date">التاريخ</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=20260921-product-images-6"></script><script src="admin.js?v=20260923-homecms-1"></script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title data-ar="إدارة عطور نادية" data-en="Nadia’s Admin">إدارة عطور نادية</title>
+<script>(function(){var l='ar';try{l=localStorage.getItem('nadia_lang')==='en'?'en':'ar'}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr'})()</script>
+<link rel="stylesheet" href="styles.css?v=20260923-luxury-2">
+<link rel="stylesheet" href="admin-v2.css?v=20260925-cms2">
+<script src="language.js?v=20260921-product-images-6"></script>
+</head>
+<body class="admin-body">
+<section id="login" class="admin-login">
+  <img class="brand-logo" src="nadias-logo-transparent.png" alt="Nadia’s Perfume Cart">
+  <h1 data-ar="لوحة الإدارة" data-en="Admin Dashboard">لوحة الإدارة</h1>
+  <p data-ar="إدارة المنتجات والمحتوى والصور والطلبات من مكان واحد." data-en="Manage products, content, images and orders from one place.">إدارة المنتجات والمحتوى والصور والطلبات من مكان واحد.</p>
+  <form id="loginForm" onsubmit="login(event)">
+    <div class="field"><label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label><input name="email" type="email" autocomplete="username" required></div>
+    <div class="field" style="margin-top:12px"><label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label><input name="password" type="password" autocomplete="current-password" required></div>
+    <button class="admin-btn gold" style="width:100%;margin-top:16px" type="submit" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</button>
+    <div id="loginMsg" class="status-line"></div>
+  </form>
+</section>
 
+<div id="app" class="admin-layout hidden">
+  <aside class="admin-sidebar">
+    <img class="brand-logo" src="nadias-logo-transparent.png" alt="Nadia’s Perfume Cart">
+    <div id="adminUser" class="admin-user"></div>
+    <nav class="admin-nav">
+      <button class="active" data-admin-tab="dashboard" onclick="openTab('dashboard',this)" data-ar="نظرة عامة" data-en="Dashboard">نظرة عامة</button>
+      <button data-admin-tab="products" onclick="openTab('products',this)" data-ar="المنتجات" data-en="Products">المنتجات</button>
+      <button data-admin-tab="home" onclick="openTab('home',this)" data-ar="الصفحة الرئيسية" data-en="Home page">الصفحة الرئيسية</button>
+      <button data-admin-tab="pages" onclick="openTab('pages',this)" data-ar="الصفحات" data-en="Pages">الصفحات</button>
+      <button data-admin-tab="settings" onclick="openTab('settings',this)" data-ar="إعدادات الموقع" data-en="Site settings">إعدادات الموقع</button>
+      <button data-admin-tab="orders" onclick="openTab('orders',this)" data-ar="الطلبات" data-en="Orders">الطلبات</button>
+      <button data-admin-tab="events" onclick="openTab('events',this)" data-ar="طلبات المناسبات" data-en="Event requests">طلبات المناسبات</button>
+    </nav>
+    <div class="admin-sidebar-bottom">
+      <a class="admin-btn ghost" href="index.html" target="_blank" data-ar="فتح الموقع ↗" data-en="Open website ↗">فتح الموقع ↗</a>
+      <button class="admin-btn danger" onclick="logout()" data-ar="تسجيل الخروج" data-en="Sign out">تسجيل الخروج</button>
+    </div>
+  </aside>
 
+  <main class="admin-main">
+    <header class="admin-header">
+      <div><h1 id="tabTitle" data-ar="نظرة عامة" data-en="Dashboard">نظرة عامة</h1><p id="tabSubtitle" data-ar="إدارة الموقع من لوحة واحدة." data-en="Manage your website from one dashboard.">إدارة الموقع من لوحة واحدة.</p></div>
+      <div class="admin-header-actions"><button class="admin-btn" onclick="toggleLang()" data-language-toggle>EN</button><button class="admin-btn" onclick="refreshAll()" data-ar="تحديث" data-en="Refresh">تحديث</button></div>
+    </header>
+
+    <section id="tab-dashboard" class="admin-tab active">
+      <div class="admin-grid-4">
+        <div class="metric"><span id="metricProducts" class="value">—</span><span class="label" data-ar="المنتجات" data-en="Products">المنتجات</span></div>
+        <div class="metric"><span id="metricAvailable" class="value">—</span><span class="label" data-ar="متوفر" data-en="Available">متوفر</span></div>
+        <div class="metric"><span id="metricOrders" class="value">—</span><span class="label" data-ar="الطلبات" data-en="Orders">الطلبات</span></div>
+        <div class="metric"><span id="metricEvents" class="value">—</span><span class="label" data-ar="طلبات المناسبات" data-en="Event requests">طلبات المناسبات</span></div>
+      </div>
+      <div class="admin-card-v2" style="margin-top:18px"><h2 data-ar="تحكم سريع" data-en="Quick control">تحكم سريع</h2><p class="hint" data-ar="الآن يمكنك تعديل الأسعار والمخزون والصور ومحتوى الهوم والصفحات وبيانات التواصل بدون الرجوع للكود." data-en="You can now edit prices, stock, images, home content, pages and contact details without touching the code.">الآن يمكنك تعديل الأسعار والمخزون والصور ومحتوى الهوم والصفحات وبيانات التواصل بدون الرجوع للكود.</p><div class="admin-actions"><button class="admin-btn gold" onclick="openTab('products')" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button><button class="admin-btn" onclick="openTab('home')" data-ar="تعديل الهوم" data-en="Edit home">تعديل الهوم</button><button class="admin-btn" onclick="openTab('settings')" data-ar="إعدادات الموقع" data-en="Site settings">إعدادات الموقع</button></div></div>
+    </section>
+
+    <section id="tab-products" class="admin-tab">
+      <div class="admin-card-v2">
+        <div class="admin-toolbar"><div><h2 style="margin:0" data-ar="المنتجات" data-en="Products">المنتجات</h2><p class="hint" data-ar="الاسم والسعر والمخزون والصورة والتوفر." data-en="Names, prices, stock, images and availability.">الاسم والسعر والمخزون والصورة والتوفر.</p></div><button class="admin-btn gold" onclick="newProduct()" data-ar="+ إضافة منتج" data-en="+ Add product">+ إضافة منتج</button></div>
+        <input id="productSearch" class="search" type="search" oninput="renderProducts()" data-placeholder-ar="ابحث باسم العطر..." data-placeholder-en="Search perfumes..." placeholder="ابحث باسم العطر...">
+        <div class="admin-table-wrap" style="margin-top:14px"><table class="admin-table-v2"><thead><tr><th data-ar="الصورة" data-en="Image">الصورة</th><th data-ar="العطر" data-en="Perfume">العطر</th><th data-ar="السعر" data-en="Price">السعر</th><th data-ar="المخزون" data-en="Stock">المخزون</th><th data-ar="الحالة" data-en="Status">الحالة</th><th></th></tr></thead><tbody id="productsBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="tab-home" class="admin-tab">
+      <form id="homeForm" onsubmit="saveHomeContent(event)">
+        <div class="admin-card-v2"><h2 data-ar="واجهة الهوم" data-en="Home hero">واجهة الهوم</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="homeHeroAr"></div>
+          <div class="field"><label data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="homeHeroEn"></div>
+          <div class="field full"><label data-ar="رابط صورة الهوم" data-en="Hero image URL">رابط صورة الهوم</label><input id="homeHeroImage" type="url"></div>
+          <div class="field full upload-box"><label data-ar="أو ارفع صورة جديدة" data-en="Or upload a new image">أو ارفع صورة جديدة</label><input id="homeHeroFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        </div></div>
+        <div class="admin-card-v2"><h2 data-ar="قسم الهدايا" data-en="Gifts section">قسم الهدايا</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="homeGiftsAr"></div><div class="field"><label data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="homeGiftsEn"></div>
+          <div class="field full"><label data-ar="رابط الصورة" data-en="Image URL">رابط الصورة</label><input id="homeGiftsImage" type="url"></div><div class="field full upload-box"><label data-ar="رفع صورة" data-en="Upload image">رفع صورة</label><input id="homeGiftsFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        </div></div>
+        <div class="admin-card-v2"><h2 data-ar="عربة المناسبات في الهوم" data-en="Home event cart">عربة المناسبات في الهوم</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="homeEventAr"></div><div class="field"><label data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="homeEventEn"></div>
+          <div class="field"><label data-ar="الصورة الأولى" data-en="Image 1 URL">الصورة الأولى</label><input id="homeEventImage1" type="url"><div class="upload-box" style="margin-top:8px"><input id="homeEventFile1" type="file" accept="image/jpeg,image/png,image/webp"></div></div>
+          <div class="field"><label data-ar="الصورة الثانية" data-en="Image 2 URL">الصورة الثانية</label><input id="homeEventImage2" type="url"><div class="upload-box" style="margin-top:8px"><input id="homeEventFile2" type="file" accept="image/jpeg,image/png,image/webp"></div></div>
+        </div></div>
+        <div class="admin-card-v2"><h2 data-ar="قسم قصتنا" data-en="Our Story section">قسم قصتنا</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="homeStoryAr"></div><div class="field"><label data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="homeStoryEn"></div>
+          <div class="field full"><label data-ar="رابط الصورة" data-en="Image URL">رابط الصورة</label><input id="homeStoryImage" type="url"></div><div class="field full upload-box"><input id="homeStoryFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        </div></div>
+        <button class="admin-btn gold" type="submit" data-ar="حفظ الصفحة الرئيسية" data-en="Save home page">حفظ الصفحة الرئيسية</button><span id="homeStatus" class="status-line"></span>
+      </form>
+    </section>
+
+    <section id="tab-pages" class="admin-tab">
+      <div class="admin-card-v2">
+        <div class="admin-grid-2"><div class="field"><label data-ar="اختر الصفحة" data-en="Choose page">اختر الصفحة</label><select id="pageKey" onchange="loadPageContent()"><option value="story" data-ar="قصتنا" data-en="Our Story">قصتنا</option><option value="gifts" data-ar="الهدايا" data-en="Gifts">الهدايا</option><option value="shipping" data-ar="الشحن" data-en="Shipping">الشحن</option><option value="faq" data-ar="الأسئلة الشائعة" data-en="FAQ">الأسئلة الشائعة</option><option value="privacy" data-ar="الخصوصية" data-en="Privacy">الخصوصية</option><option value="terms" data-ar="الشروط" data-en="Terms">الشروط</option><option value="returns" data-ar="الاستبدال والاسترجاع" data-en="Returns">الاستبدال والاسترجاع</option><option value="event_cart" data-ar="عربة المناسبات" data-en="Event Cart">عربة المناسبات</option></select></div></div>
+      </div>
+      <form id="pageForm" onsubmit="savePageContent(event)">
+        <div class="admin-card-v2"><h2 data-ar="محتوى الصفحة" data-en="Page content">محتوى الصفحة</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="العنوان بالعربية" data-en="Arabic title">العنوان بالعربية</label><input id="pageTitleAr"></div><div class="field"><label data-ar="العنوان بالإنجليزية" data-en="English title">العنوان بالإنجليزية</label><input id="pageTitleEn"></div>
+          <div class="field"><label data-ar="النص بالعربية" data-en="Arabic intro/body">النص بالعربية</label><textarea id="pageBodyAr"></textarea></div><div class="field"><label data-ar="النص بالإنجليزية" data-en="English intro/body">النص بالإنجليزية</label><textarea id="pageBodyEn"></textarea></div>
+          <div class="field full"><label data-ar="صورة الصفحة" data-en="Page image URL">صورة الصفحة</label><input id="pageImage" type="url"></div><div class="field full upload-box"><input id="pageImageFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
+          <div id="eventGalleryFields" class="field full hidden"><label data-ar="صور عربة المناسبات — رابط في كل سطر" data-en="Event Cart gallery — one URL per line">صور عربة المناسبات — رابط في كل سطر</label><textarea id="pageGallery"></textarea><div class="upload-box" style="margin-top:8px"><label data-ar="إضافة صور للمعرض" data-en="Add gallery images">إضافة صور للمعرض</label><input id="pageGalleryFiles" type="file" multiple accept="image/jpeg,image/png,image/webp"></div></div>
+        </div><button class="admin-btn gold" type="submit" data-ar="حفظ الصفحة" data-en="Save page">حفظ الصفحة</button><span id="pageStatus" class="status-line"></span></div>
+      </form>
+    </section>
+
+    <section id="tab-settings" class="admin-tab">
+      <form id="settingsForm" onsubmit="saveSettings(event)">
+        <div class="admin-card-v2"><h2 data-ar="بيانات التواصل" data-en="Contact & social">بيانات التواصل</h2><div class="admin-grid-2">
+          <div class="field"><label data-ar="رقم واتساب بصيغة دولية بدون +" data-en="WhatsApp number, international format without +">رقم واتساب بصيغة دولية بدون +</label><input id="settingWhatsapp" inputmode="tel"></div>
+          <div class="field"><label data-ar="العملة" data-en="Currency">العملة</label><select id="settingCurrency"><option value="EGP">EGP — جنيه مصري</option><option value="SAR">SAR — ريال سعودي</option><option value="USD">USD — US Dollar</option></select></div>
+          <div class="field"><label>Instagram</label><input id="settingInstagram" type="url"></div><div class="field"><label>TikTok</label><input id="settingTiktok" type="url"></div>
+          <div class="field"><label data-ar="عبارة الفوتر بالعربية" data-en="Arabic footer tagline">عبارة الفوتر بالعربية</label><input id="settingFooterAr"></div><div class="field"><label data-ar="عبارة الفوتر بالإنجليزية" data-en="English footer tagline">عبارة الفوتر بالإنجليزية</label><input id="settingFooterEn"></div>
+        </div><button class="admin-btn gold" type="submit" data-ar="حفظ الإعدادات" data-en="Save settings">حفظ الإعدادات</button><span id="settingsStatus" class="status-line"></span></div>
+      </form>
+      <div class="admin-card-v2"><h2 data-ar="الإعلان أعلى الموقع" data-en="Top announcement">الإعلان أعلى الموقع</h2><form onsubmit="saveAnnouncement(event)"><input id="annId" type="hidden"><div class="admin-grid-2"><div class="field"><label data-ar="العربية" data-en="Arabic">العربية</label><input id="annAr"></div><div class="field"><label data-ar="الإنجليزية" data-en="English">الإنجليزية</label><input id="annEn"></div><div class="field full"><label class="inline-check"><input id="annActive" type="checkbox"> <span data-ar="إظهار الإعلان" data-en="Show announcement">إظهار الإعلان</span></label></div></div><button class="admin-btn gold" type="submit" data-ar="حفظ الإعلان" data-en="Save announcement">حفظ الإعلان</button></form></div>
+    </section>
+
+    <section id="tab-orders" class="admin-tab"><div class="admin-card-v2"><div class="admin-section-title"><h2 data-ar="الطلبات" data-en="Orders">الطلبات</h2></div><div class="admin-table-wrap"><table class="admin-table-v2"><thead><tr><th data-ar="الطلب" data-en="Order">الطلب</th><th data-ar="العميل" data-en="Customer">العميل</th><th data-ar="الإجمالي" data-en="Total">الإجمالي</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="التاريخ" data-en="Date">التاريخ</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div></section>
+
+    <section id="tab-events" class="admin-tab"><div class="admin-card-v2"><h2 data-ar="طلبات عربة المناسبات" data-en="Bespoke Event Cart Requests">طلبات عربة المناسبات</h2><div class="admin-table-wrap"><table class="admin-table-v2"><thead><tr><th data-ar="المرجع" data-en="Reference">المرجع</th><th data-ar="العميل" data-en="Client">العميل</th><th data-ar="المناسبة" data-en="Event">المناسبة</th><th data-ar="التاريخ / المدينة" data-en="Date / City">التاريخ / المدينة</th><th data-ar="الضيوف" data-en="Guests">الضيوف</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="المتطلبات" data-en="Requirements">المتطلبات</th></tr></thead><tbody id="eventsBody"></tbody></table></div></div></section>
+  </main>
+</div>
+
+<div id="productEditor" class="editor-overlay hidden">
+  <div class="editor-panel">
+    <div class="editor-head"><h2 id="productEditorTitle" data-ar="المنتج" data-en="Product">المنتج</h2><button class="admin-btn" type="button" onclick="closeProductEditor()">✕</button></div>
+    <form id="productForm" onsubmit="saveProduct(event)">
+      <input id="pid" name="id" type="hidden">
+      <div class="admin-grid-2">
+        <div class="field"><label data-ar="معرّف الرابط" data-en="Slug">معرّف الرابط</label><input name="slug" required></div>
+        <div class="field"><label data-ar="الحجم ml" data-en="Size ml">الحجم ml</label><input name="size_ml" type="number" min="0"></div>
+        <div class="field"><label data-ar="الاسم بالعربية" data-en="Arabic name">الاسم بالعربية</label><input name="name_ar" required></div>
+        <div class="field"><label data-ar="الاسم بالإنجليزية" data-en="English name">الاسم بالإنجليزية</label><input name="name_en" required></div>
+        <div class="field"><label data-ar="السعر" data-en="Price">السعر</label><input name="price" type="number" min="0" step=".01"></div>
+        <div class="field"><label data-ar="السعر قبل الخصم" data-en="Compare-at price">السعر قبل الخصم</label><input name="compare_at_price" type="number" min="0" step=".01"></div>
+        <div class="field"><label data-ar="المخزون" data-en="Stock">المخزون</label><input name="stock" type="number" min="0"></div>
+        <div class="field"><label data-ar="رابط الصورة" data-en="Image URL">رابط الصورة</label><input id="productImageUrl" name="image_url" type="url" oninput="previewProductImage()"></div>
+        <div class="field full upload-box"><label data-ar="رفع صورة من الجهاز" data-en="Upload image from device">رفع صورة من الجهاز</label><input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp" onchange="previewLocalProductImage(this)"><img id="productImagePreview" class="image-preview" alt=""></div>
+        <div class="field"><label data-ar="الوصف بالعربية" data-en="Arabic description">الوصف بالعربية</label><textarea name="description_ar"></textarea></div>
+        <div class="field"><label data-ar="الوصف بالإنجليزية" data-en="English description">الوصف بالإنجليزية</label><textarea name="description_en"></textarea></div>
+        <div class="field full"><div class="admin-actions"><label class="inline-check"><input name="active" type="checkbox"> <span data-ar="نشط ومتاح للعرض" data-en="Active and visible">نشط ومتاح للعرض</span></label><label class="inline-check"><input name="featured" type="checkbox"> <span data-ar="مميز" data-en="Featured">مميز</span></label></div></div>
+      </div>
+      <div class="admin-actions" style="margin-top:18px"><button class="admin-btn gold" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button><button class="admin-btn" type="button" onclick="closeProductEditor()" data-ar="إلغاء" data-en="Cancel">إلغاء</button><span id="productStatus" class="status-line"></span></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=20260921-product-images-6"></script>
+<script src="admin.js?v=20260925-cms2"></script>
+</body></html>
