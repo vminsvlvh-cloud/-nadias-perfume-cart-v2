@@ -2,6 +2,7 @@ const cfg=window.NADIA_SUPABASE||{};
 const sb=supabase.createClient(cfg.url,cfg.anonKey);
 const MEDIA_BUCKET='site-media';
 let products=[],orders=[],events=[],siteSettings={currency:'EGP'},currentUser=null;
+let pageLoadVersion=0;
 
 const A=s=>document.querySelector(s);
 const AA=s=>[...document.querySelectorAll(s)];
@@ -52,14 +53,14 @@ const TAB_TEXT={
   orders:['الطلبات','Orders','تابع الطلبات وحدّث حالتها.','Review orders and update their status.'],
   events:['طلبات المناسبات','Event requests','تابع حجوزات عربة المناسبات.','Manage event cart booking requests.']
 };
-function openTab(name,button){
+function openTab(name,button,options={}){
   AA('.admin-tab').forEach(el=>el.classList.toggle('active',el.id==='tab-'+name));
   AA('[data-admin-tab]').forEach(el=>el.classList.toggle('active',el.dataset.adminTab===name));
   const x=TAB_TEXT[name]||TAB_TEXT.dashboard;
   const title=A('#tabTitle'),sub=A('#tabSubtitle');
   if(title){title.dataset.ar=x[0];title.dataset.en=x[1];title.textContent=txt(x[0],x[1])}
   if(sub){sub.dataset.ar=x[2];sub.dataset.en=x[3];sub.textContent=txt(x[2],x[3])}
-  if(name==='pages')loadPageContent();
+  if(name==='pages'&&!options.skipLoad)loadPageContent();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 async function refreshAll(){
@@ -140,22 +141,38 @@ async function toggleAvailability(id,makeAvailable){
   if(error)return alert(error.message);await loadProducts();
 }
 async function saveProduct(e){
-  e.preventDefault();setStatus('#productStatus',txt('جاري الحفظ…','Saving…'));
+  e.preventDefault();
+  const form=e.target;
+  if(form.dataset.saving==='true')return;
+  form.dataset.saving='true';
+  const submit=form.querySelector('[type="submit"]');if(submit)submit.disabled=true;
+  setStatus('#productStatus',txt('جاري الحفظ…','Saving…'));
   try{
-    const f=new FormData(e.target),id=f.get('id');
-    let imageUrl=f.get('image_url')?.trim()||null;
+    const f=new FormData(form),id=String(f.get('id')||''),slug=String(f.get('slug')||'').trim().toLowerCase();
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))throw new Error(txt('معرّف الرابط يجب أن يحتوي على حروف إنجليزية صغيرة وأرقام وشرطات فقط.','Slug can only contain lowercase letters, numbers and hyphens.'));
+    if(products.some(p=>p.slug===slug&&String(p.id)!==id))throw new Error(txt('معرّف الرابط مستخدم لمنتج آخر.','This slug is already used by another product.'));
+    let imageUrl=String(f.get('image_url')||'').trim()||null;
     const file=A('#productImageFile')?.files?.[0];if(file)imageUrl=await uploadImage(file,'products');
     const row={
-      slug:f.get('slug').trim(),name_ar:f.get('name_ar').trim(),name_en:f.get('name_en').trim(),
+      slug,name_ar:String(f.get('name_ar')||'').trim(),name_en:String(f.get('name_en')||'').trim(),
       price:f.get('price')===''?null:Number(f.get('price')),compare_at_price:f.get('compare_at_price')===''?null:Number(f.get('compare_at_price')),
       size_ml:f.get('size_ml')===''?null:Number(f.get('size_ml')),stock:f.get('stock')===''?0:Number(f.get('stock')),
-      image_url:imageUrl,description_ar:f.get('description_ar')?.trim()||null,description_en:f.get('description_en')?.trim()||null,
+      image_url:imageUrl,description_ar:String(f.get('description_ar')||'').trim()||null,description_en:String(f.get('description_en')||'').trim()||null,
       active:f.get('active')==='on',featured:f.get('featured')==='on',updated_at:new Date().toISOString()
     };
-    const r=id?await sb.from('products').update(row).eq('id',id):await sb.from('products').insert(row);
+    const r=id
+      ?await sb.from('products').update(row).eq('id',id).select('id,slug').single()
+      :await sb.from('products').insert(row).select('id,slug').single();
     if(r.error)throw r.error;
-    setStatus('#productStatus',txt('تم الحفظ.','Saved.'),'success');await loadProducts();setTimeout(closeProductEditor,500);
-  }catch(err){console.error(err);setStatus('#productStatus',err.message||String(err),'error')}
+    if(A('#productImageFile'))A('#productImageFile').value='';
+    setVal('#productImageUrl',imageUrl||'');
+    setStatus('#productStatus',txt('تم الحفظ.','Saved.'),'success');
+    await loadProducts();setTimeout(closeProductEditor,500);
+  }catch(err){
+    console.error(err);setStatus('#productStatus',err.message||String(err),'error');
+  }finally{
+    delete form.dataset.saving;if(submit)submit.disabled=false;
+  }
 }
 
 async function getContent(key){
@@ -194,13 +211,17 @@ async function saveHomeContent(e){
 }
 
 async function loadPageContent(){
-  const key=A('#pageKey')?.value||'story';A('#eventGalleryFields')?.classList.toggle('hidden',key!=='event_cart');
+  const key=A('#pageKey')?.value||'story',version=++pageLoadVersion;
+  A('#eventGalleryFields')?.classList.toggle('hidden',key!=='event_cart');
   try{
     const v=await getContent('page_'+key);
+    if(version!==pageLoadVersion||key!==(A('#pageKey')?.value||'story'))return;
     setVal('#pageTitleAr',v.title_ar);setVal('#pageTitleEn',v.title_en);setVal('#pageBodyAr',v.body_ar);setVal('#pageBodyEn',v.body_en);setVal('#pageImage',v.image_url);
     setVal('#pageGallery',Array.isArray(v.gallery)?v.gallery.join('\n'):'');
+    if(A('#pageImageFile'))A('#pageImageFile').value='';
+    if(A('#pageGalleryFiles'))A('#pageGalleryFiles').value='';
     setStatus('#pageStatus','');
-  }catch(err){console.error(err);setStatus('#pageStatus',err.message||String(err),'error')}
+  }catch(err){if(version!==pageLoadVersion)return;console.error(err);setStatus('#pageStatus',err.message||String(err),'error')}
 }
 async function savePageContent(e){
   e.preventDefault();setStatus('#pageStatus',txt('جاري الحفظ…','Saving…'));
@@ -280,7 +301,8 @@ async function setEventStatus(id,status){
 }
 
 document.addEventListener('languagechange',()=>{
-  const active=AA('[data-admin-tab].active')[0]?.dataset.adminTab||'dashboard';openTab(active);
+  const active=AA('[data-admin-tab].active')[0]?.dataset.adminTab||'dashboard';
+  openTab(active,null,{skipLoad:true});
   renderProducts();renderOrders();renderEvents();
 });
 document.addEventListener('DOMContentLoaded',init);
