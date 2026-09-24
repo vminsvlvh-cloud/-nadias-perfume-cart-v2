@@ -197,7 +197,7 @@ async function loadPageContent(){
   const key=A('#pageKey')?.value||'story';A('#eventGalleryFields')?.classList.toggle('hidden',key!=='event_cart');
   try{
     const v=await getContent('page_'+key);
-    setVal('#pageTitleAr',v.title_ar);setVal('#pageTitleEn',v.title_en);setVal('#pageBodyAr',v.body_ar);setVal('#pageBodyEn',v.body_en);setVal('#pageImage',v.image);
+    setVal('#pageTitleAr',v.title_ar);setVal('#pageTitleEn',v.title_en);setVal('#pageBodyAr',v.body_ar);setVal('#pageBodyEn',v.body_en);setVal('#pageImage',v.image_url);
     setVal('#pageGallery',Array.isArray(v.gallery)?v.gallery.join('\n'):'');
     setStatus('#pageStatus','');
   }catch(err){console.error(err);setStatus('#pageStatus',err.message||String(err),'error')}
@@ -211,7 +211,7 @@ async function savePageContent(e){
     for(const f of galleryFiles)gallery.push(await uploadImage(f,'pages/'+key+'/gallery'));
     const value={
       title_ar:val('#pageTitleAr'),title_en:val('#pageTitleEn'),body_ar:val('#pageBodyAr'),body_en:val('#pageBodyEn'),
-      image:await maybeUpload('#pageImageFile','pages/'+key,val('#pageImage')),gallery
+      image_url:await maybeUpload('#pageImageFile','pages/'+key,val('#pageImage')),gallery
     };
     await putContent('page_'+key,value);setStatus('#pageStatus',txt('تم حفظ الصفحة.','Page saved.'),'success');await loadPageContent();
   }catch(err){console.error(err);setStatus('#pageStatus',err.message||String(err),'error')}
