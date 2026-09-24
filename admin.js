@@ -174,9 +174,9 @@ async function saveProduct(e){
   e.preventDefault();setStatus('#productStatus',t('جاري الحفظ…','Saving…'));
   try{
     const f=new FormData(e.target),id=String(f.get('id')||'');
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(f.get('slug')||'').trim()))throw new Error(t('استخدم حروفاً إنجليزية صغيرة وأرقاماً وشرطات لرابط المنتج.','Use lowercase letters, numbers and hyphens for the product slug.'));
     let imageUrl=String(f.get('image_url')||'').trim();
     if($('#productImageFile').files?.[0])imageUrl=await uploadImage($('#productImageFile').files[0],'products');
-    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(f.get('slug')||'').trim()))throw new Error(t('استخدم حروفاً إنجليزية صغيرة وأرقاماً وشرطات لرابط المنتج.','Use lowercase letters, numbers and hyphens for the product slug.'));
     const row={
       slug:String(f.get('slug')||'').trim(),name_ar:String(f.get('name_ar')||'').trim(),name_en:String(f.get('name_en')||'').trim(),
       price:f.get('price')===''?null:Number(f.get('price')),compare_at_price:f.get('compare_at_price')===''?null:Number(f.get('compare_at_price')),
@@ -184,7 +184,7 @@ async function saveProduct(e){
       image_url:imageUrl||null,description_ar:String(f.get('description_ar')||'').trim()||null,description_en:String(f.get('description_en')||'').trim()||null,
       active:f.get('active')==='on',featured:f.get('featured')==='on',updated_at:new Date().toISOString()
     };
-    const r=id?await sb.from('products').update(row).eq('id',id):await sb.from('products').insert(row).select('id').single();
+    const r=id?await sb.from('products').update(row).eq('id',id).select('id').single():await sb.from('products').insert(row).select('id').single();
     if(r.error)throw r.error;
     setStatus('#productStatus',t('تم الحفظ.','Saved.'),'success');await loadProducts();closeProductEditor();
   }catch(err){setStatus('#productStatus',err.message||String(err),'error')}
