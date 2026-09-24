@@ -49,7 +49,7 @@ async function loadHomeContent(){
   const {data}=await sb.from('site_content').select('value').eq('key','home').maybeSingle();
   const v=data?.value||{};
   const setText=(el,ar,en)=>{if(!el)return;if(ar)el.dataset.ar=ar;if(en)el.dataset.en=en;el.textContent=lang==='ar'?(el.dataset.ar||''):(el.dataset.en||'')};
-  const setImg=(el,url)=>{if(el&&/^https:\\/\\//i.test(url||'')){el.src=url;el.removeAttribute('srcset')}};
+  const setImg=(el,url)=>{if(el&&/^https:\/\//i.test(url||'')){el.src=url;el.removeAttribute('srcset')}};
   setText(document.querySelector('.hero h1'),v.hero_ar,v.hero_en);
   setImg(document.querySelector('.hero .campaign-image'),v.hero_image);
   setText(document.querySelector('#gifting h2'),v.gifts_ar,v.gifts_en);
@@ -157,7 +157,7 @@ function applyPageCms(page,v={}){
   if(page==='story'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p');image=document.querySelector('main .campaign-figure img')}
   else if(page==='gifts'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p');image=document.querySelector('main .campaign-figure img')}
   else if(page==='shipping'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p')}
-  else if(page==='faq'){title=document.querySelector('main .section-head h2');body=document.querySelector('main .section-head .cms-page-intro');if(!body&&v.body_ar||v.body_en){const head=document.querySelector('main .section-head');if(head){body=document.createElement('p');body.className='cms-page-intro muted';head.appendChild(body)}}}
+  else if(page==='faq'){title=document.querySelector('main .section-head h2');body=document.querySelector('main .section-head .cms-page-intro');if(!body&&(v.body_ar||v.body_en)){const head=document.querySelector('main .section-head');if(head){body=document.createElement('p');body.className='cms-page-intro muted';head.appendChild(body)}}}
   else if(['privacy','terms','returns'].includes(page)){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p')}
   else if(page==='event_cart'){title=document.querySelector('.event-copy h1');body=document.querySelector('.event-copy .event-lead');image=document.querySelector('.event-photo-showcase img')}
   applyCmsText(title,v.title_ar,v.title_en);
