@@ -5,6 +5,8 @@ const $$=s=>Array.from(document.querySelectorAll(s));
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 let products=[];
 let cms={};
+let cmsPageLoaded=false;
+let pageLoadVersion=0;
 let settings={currency:'EGP',whatsapp:'201112564000'};
 
 function setStatus(id,msg,type=''){
@@ -81,7 +83,7 @@ function openTab(name,button){
   const title=$('#tabTitle'),sub=$('#tabSubtitle');
   title.dataset.ar=m[0];title.dataset.en=m[1];title.textContent=lang==='ar'?m[0]:m[1];
   sub.dataset.ar=m[2];sub.dataset.en=m[3];sub.textContent=lang==='ar'?m[2]:m[3];
-  if(name==='pages')loadPageContent();
+  if(name==='pages' && !cmsPageLoaded)loadPageContent();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateDashboard(){
@@ -95,7 +97,7 @@ async function loadCmsCache(){
   cms={};(data||[]).forEach(r=>cms[r.key]=r.value||{});
 }
 async function saveCms(key,value){
-  const {error}=await sb.from('site_content').upsert({key,value,updated_at:new Date().toISOString()},{onConflict:'key'});
+  const {error}=await sb.from('site_content').upsert({key,value,updated_at:new Date().toISOString()},{onConflict:'key'}).select('key').single();
   if(error)throw error;cms[key]=value;
 }
 
@@ -128,6 +130,7 @@ function renderProducts(){
   const rows=products.filter(p=>!q||[p.name_ar,p.name_en,p.slug].some(v=>String(v||'').toLowerCase().includes(q)));
   $('#productsBody').innerHTML=rows.map(p=>{
     const available=p.active&&Number(p.stock)>0;
+    const visible=!!p.active;
     const img=p.image_url?'<img src="'+esc(p.image_url)+'" alt="" onerror="this.style.visibility=\'hidden\'">':'<span class="admin-pill">—</span>';
     return '<tr>'+
       '<td>'+img+'</td>'+
@@ -135,14 +138,14 @@ function renderProducts(){
       '<td>'+money(p.price)+(p.compare_at_price?'<br><small><s>'+money(p.compare_at_price)+'</s></small>':'')+'</td>'+
       '<td>'+esc(p.stock??0)+'</td>'+
       '<td><span class="admin-pill '+(available?'on':'off')+'">'+(available?t('متوفر','Available'):t('غير متوفر','Unavailable'))+'</span></td>'+
-      '<td><div class="admin-actions"><button class="admin-btn small" onclick="editProduct(\''+esc(p.id)+'\')">'+t('تعديل','Edit')+'</button><button class="admin-btn small" onclick="toggleAvailability(\''+esc(p.id)+'\','+(available?'false':'true')+')">'+(available?t('إخفاء','Hide'):t('إظهار','Show'))+'</button></div></td>'+
+      '<td><div class="admin-actions"><button class="admin-btn small" onclick="editProduct(\''+esc(p.id)+'\')">'+t('تعديل','Edit')+'</button><button class="admin-btn small" onclick="toggleAvailability(\''+esc(p.id)+'\','+(visible?'false':'true')+')">'+(visible?t('إخفاء','Hide'):t('إظهار','Show'))+'</button></div></td>'+
     '</tr>';
   }).join('')||'<tr><td colspan="6">'+t('لا توجد نتائج.','No results.')+'</td></tr>';
 }
 async function toggleAvailability(id,makeAvailable){
   const p=products.find(x=>x.id===id);if(!p)return;
   if(makeAvailable&&!(Number(p.stock)>0)){editProduct(id);alert(t('أدخل كمية مخزون أكبر من صفر أولاً.','Enter stock greater than zero first.'));return}
-  const {error}=await sb.from('products').update({active:makeAvailable,updated_at:new Date().toISOString()}).eq('id',id);
+  const {error}=await sb.from('products').update({active:makeAvailable,updated_at:new Date().toISOString()}).eq('id',id).select('id').single();
   if(error)return alert(error.message);await loadProducts();
 }
 function newProduct(){
@@ -173,6 +176,7 @@ async function saveProduct(e){
     const f=new FormData(e.target),id=String(f.get('id')||'');
     let imageUrl=String(f.get('image_url')||'').trim();
     if($('#productImageFile').files?.[0])imageUrl=await uploadImage($('#productImageFile').files[0],'products');
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(f.get('slug')||'').trim()))throw new Error(t('استخدم حروفاً إنجليزية صغيرة وأرقاماً وشرطات لرابط المنتج.','Use lowercase letters, numbers and hyphens for the product slug.'));
     const row={
       slug:String(f.get('slug')||'').trim(),name_ar:String(f.get('name_ar')||'').trim(),name_en:String(f.get('name_en')||'').trim(),
       price:f.get('price')===''?null:Number(f.get('price')),compare_at_price:f.get('compare_at_price')===''?null:Number(f.get('compare_at_price')),
@@ -180,9 +184,9 @@ async function saveProduct(e){
       image_url:imageUrl||null,description_ar:String(f.get('description_ar')||'').trim()||null,description_en:String(f.get('description_en')||'').trim()||null,
       active:f.get('active')==='on',featured:f.get('featured')==='on',updated_at:new Date().toISOString()
     };
-    const r=id?await sb.from('products').update(row).eq('id',id):await sb.from('products').insert(row);
+    const r=id?await sb.from('products').update(row).eq('id',id):await sb.from('products').insert(row).select('id').single();
     if(r.error)throw r.error;
-    setStatus('#productStatus',t('تم الحفظ.','Saved.'),'success');await loadProducts();setTimeout(closeProductEditor,450);
+    setStatus('#productStatus',t('تم الحفظ.','Saved.'),'success');await loadProducts();closeProductEditor();
   }catch(err){setStatus('#productStatus',err.message||String(err),'error')}
 }
 
@@ -213,7 +217,7 @@ async function saveHomeContent(e){
       story_ar:$('#homeStoryAr').value.trim(),story_en:$('#homeStoryEn').value.trim(),
       story_image:await uploadFromInput('#homeStoryFile','home/story',$('#homeStoryImage').value.trim())
     };
-    await saveCms('home',v);setStatus('#homeStatus',t('تم تحديث الصفحة الرئيسية.','Home page updated.'),'success');await loadHomeContent();
+    await saveCms('home',v);clearUploads(e.target);setStatus('#homeStatus',t('تم تحديث الصفحة الرئيسية.','Home page updated.'),'success');await loadHomeContent();
   }catch(err){setStatus('#homeStatus',err.message||String(err),'error')}
 }
 
@@ -221,11 +225,15 @@ function selectedPage(){return $('#pageKey')?.value||'story'}
 function pageDbKey(){return 'page_'+selectedPage()}
 async function loadPageContent(){
   if(!$('#pageKey'))return;
-  const page=selectedPage();$('#eventGalleryFields').classList.toggle('hidden',page!=='event_cart');
-  let v=cms[pageDbKey()];
+  const page=selectedPage(),key='page_'+page,version=++pageLoadVersion;
+  $('#pageForm').reset();cmsPageLoaded=false;
+  $('#eventGalleryFields').classList.toggle('hidden',page!=='event_cart');
+  let v=cms[key];
   if(!v){
-    const {data}=await sb.from('site_content').select('value').eq('key',pageDbKey()).maybeSingle();v=data?.value||{};cms[pageDbKey()]=v;
+    const {data}=await sb.from('site_content').select('value').eq('key',key).maybeSingle();v=data?.value||{};cms[key]=v;
   }
+  if(version!==pageLoadVersion||selectedPage()!==page)return;
+  cmsPageLoaded=true;
   $('#pageTitleAr').value=v.title_ar||'';$('#pageTitleEn').value=v.title_en||'';
   $('#pageBodyAr').value=v.body_ar||'';$('#pageBodyEn').value=v.body_en||'';$('#pageImage').value=v.image_url||'';
   $('#pageGallery').value=Array.isArray(v.gallery)?v.gallery.join('\n'):'';
@@ -234,6 +242,7 @@ async function loadPageContent(){
 async function savePageContent(e){
   e.preventDefault();setStatus('#pageStatus',t('جاري الحفظ…','Saving…'));
   try{
+    if(!cmsPageLoaded)throw new Error(t('انتظر تحميل الصفحة أولاً.','Wait for the page to load first.'));
     let image=$('#pageImage').value.trim();
     if($('#pageImageFile').files?.[0])image=await uploadImage($('#pageImageFile').files[0],'pages/'+selectedPage());
     let gallery=$('#pageGallery').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
@@ -241,7 +250,7 @@ async function savePageContent(e){
     for(const file of galleryFiles)gallery.push(await uploadImage(file,'pages/event-cart'));
     gallery=[...new Set(gallery)];
     const v={title_ar:$('#pageTitleAr').value.trim(),title_en:$('#pageTitleEn').value.trim(),body_ar:$('#pageBodyAr').value.trim(),body_en:$('#pageBodyEn').value.trim(),image_url:image||'',gallery};
-    await saveCms(pageDbKey(),v);setStatus('#pageStatus',t('تم حفظ الصفحة.','Page saved.'),'success');await loadPageContent();
+    await saveCms(pageDbKey(),v);clearUploads(e.target);$('#pageImage').value=image;$('#pageGallery').value=gallery.join('\n');setStatus('#pageStatus',t('تم حفظ الصفحة.','Page saved.'),'success');
   }catch(err){setStatus('#pageStatus',err.message||String(err),'error')}
 }
 
@@ -284,7 +293,7 @@ async function loadOrders(){
   $('#ordersBody').innerHTML=rows.map(o=>'<tr><td><b>'+esc(o.order_number)+'</b></td><td>'+esc(o.customer_name)+'<br><small>'+esc(o.phone)+(o.email?'<br>'+esc(o.email):'')+'</small></td><td>'+money(o.total)+'</td><td><select onchange="setOrderStatus(\''+esc(o.id)+'\',this.value)">'+['new','confirmed','processing','shipped','completed','cancelled'].map(s=>'<option value="'+s+'" '+(o.status===s?'selected':'')+'>'+statusLabel(s)+'</option>').join('')+'</select></td><td>'+dateTime(o.created_at)+'</td></tr>').join('')||'<tr><td colspan="5">'+t('لا توجد طلبات بعد.','No orders yet.')+'</td></tr>';
 }
 async function setOrderStatus(id,status){
-  const {error}=await sb.from('store_orders').update({status,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);
+  const {error}=await sb.from('store_orders').update({status,updated_at:new Date().toISOString()}).eq('id',id).select('id').single();if(error){alert(error.message);await loadOrders();}
 }
 
 async function loadEvents(){
@@ -294,12 +303,38 @@ async function loadEvents(){
   $('#eventsBody').innerHTML=rows.map(r=>'<tr><td><b>'+esc(r.request_number)+'</b></td><td>'+esc(r.customer_name)+'<br><small>'+esc(r.phone)+(r.email?'<br>'+esc(r.email):'')+'</small></td><td>'+esc(eventTypeLabel(r.event_type))+(r.venue?'<br><small>'+esc(r.venue)+'</small>':'')+'</td><td>'+esc(r.event_date)+'<br><small>'+esc(r.city)+'</small></td><td>'+esc(r.guest_count??'—')+'</td><td><select onchange="setEventStatus(\''+esc(r.id)+'\',this.value)">'+['new','contacted','planning','quoted','confirmed','completed','cancelled'].map(s=>'<option value="'+s+'" '+(r.status===s?'selected':'')+'>'+statusLabel(s)+'</option>').join('')+'</select></td><td style="min-width:220px">'+esc(r.requirements)+(r.notes?'<br><small>'+esc(r.notes)+'</small>':'')+'</td></tr>').join('')||'<tr><td colspan="7">'+t('لا توجد طلبات مناسبات بعد.','No event requests yet.')+'</td></tr>';
 }
 async function setEventStatus(id,status){
-  const {error}=await sb.from('event_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);
+  const {error}=await sb.from('event_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id).select('id').single();if(error){alert(error.message);await loadEvents();}
 }
 
 document.addEventListener('DOMContentLoaded',init);
 document.addEventListener('languagechange',()=>{
   const active=$('.admin-nav button.active')?.dataset.adminTab||'dashboard';openTab(active);
   renderProducts();loadOrders();loadEvents();
-  if($('#pageKey'))loadPageContent();
+
 });
+
+
+// Lock editing during each save so page selection and FormData stay consistent.
+function clearUploads(form){form.querySelectorAll('input[type=file]').forEach(input=>input.value='')}
+function guardSave(handler){
+  return async function(event){
+    event.preventDefault();
+    const form=event.target;
+    if(form.dataset.saving==='true')return;
+    form.dataset.saving='true';form.setAttribute('aria-busy','true');
+    const controls=Array.from(document.querySelectorAll('button,select,input,textarea'));
+    const disabled=controls.map(el=>el.disabled);
+    // Start synchronously: handlers must read FormData before controls are disabled.
+    const pending=handler(event);
+    controls.forEach(el=>el.disabled=true);
+    try{await pending}finally{
+      controls.forEach((el,i)=>el.disabled=disabled[i]);
+      delete form.dataset.saving;form.removeAttribute('aria-busy');
+    }
+  };
+}
+saveProduct=guardSave(saveProduct);
+saveHomeContent=guardSave(saveHomeContent);
+savePageContent=guardSave(savePageContent);
+saveSettings=guardSave(saveSettings);
+saveAnnouncement=guardSave(saveAnnouncement);
