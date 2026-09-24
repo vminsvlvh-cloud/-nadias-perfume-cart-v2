@@ -5,7 +5,7 @@ let cart=readStoredList('nadia_cart');
 let wishlist=readStoredList('nadia_wishlist');
 let allProducts=[];
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const money=v=>v==null?t('السعر يضاف من لوحة الإدارة','Price added from admin'):new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-EG',{style:'currency',currency:'EGP',maximumFractionDigits:2}).format(Number(v));
+const money=v=>{if(v==null)return t('السعر يضاف من لوحة الإدارة','Price added from admin');const currency=window.NADIA_CMS_SETTINGS?.currency||'EGP';try{return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-GB',{style:'currency',currency,maximumFractionDigits:2}).format(Number(v))}catch(_){return Number(v).toFixed(2)+' '+currency}};
 const pname=p=>lang==='ar'?(p.name_ar||p.name_en):(p.name_en||p.name_ar);
 function safe(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(msg){let x=$('#toast');if(!x){x=document.createElement('div');x.id='toast';x.className='toast';document.body.append(x)}x.textContent=msg;x.classList.remove('hidden');setTimeout(()=>x.classList.add('hidden'),2200)}
@@ -44,7 +44,22 @@ function openMenu(){closeCart();setPanelState($('#mobileMenu'),true,'[onclick="o
 function closeMenu(){setPanelState($('#mobileMenu'),false,'[onclick="openMenu()"]');syncPanelUi()}
 function closePanels(){setPanelState($('#cartDrawer'),false,'[onclick="openCart()"]');setPanelState($('#mobileMenu'),false,'[onclick="openMenu()"]');syncPanelUi()}
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closePanels()});
-async function loadHomeContent(){if(!sb||!document.querySelector('.hero'))return;const {data}=await sb.from('site_content').select('value').eq('key','home').maybeSingle();const v=data?.value||{};const hero=document.querySelector('.hero h1');if(hero&&(v.hero_ar||v.hero_en)){hero.dataset.ar=v.hero_ar||hero.dataset.ar||'';hero.dataset.en=v.hero_en||hero.dataset.en||'';hero.textContent=lang==='ar'?hero.dataset.ar:hero.dataset.en}const heroImg=document.querySelector('.hero .campaign-image');if(heroImg&&/^https:\/\//i.test(v.hero_image||'')){heroImg.src=v.hero_image;heroImg.removeAttribute('srcset')}const gifts=document.querySelector('#gifting h2');if(gifts&&(v.gifts_ar||v.gifts_en)){gifts.dataset.ar=v.gifts_ar||gifts.dataset.ar||'';gifts.dataset.en=v.gifts_en||gifts.dataset.en||'';gifts.textContent=lang==='ar'?gifts.dataset.ar:gifts.dataset.en}}
+async function loadHomeContent(){
+  if(!sb||!document.querySelector('.hero'))return;
+  const {data}=await sb.from('site_content').select('value').eq('key','home').maybeSingle();
+  const v=data?.value||{};
+  const setText=(el,ar,en)=>{if(!el)return;if(ar)el.dataset.ar=ar;if(en)el.dataset.en=en;el.textContent=lang==='ar'?(el.dataset.ar||''):(el.dataset.en||'')};
+  const setImg=(el,url)=>{if(el&&/^https:\/\//i.test(url||'')){el.src=url;el.removeAttribute('srcset')}};
+  setText(document.querySelector('.hero h1'),v.hero_ar,v.hero_en);
+  setImg(document.querySelector('.hero .campaign-image'),v.hero_image);
+  setText(document.querySelector('#gifting h2'),v.gifts_ar,v.gifts_en);
+  setImg(document.querySelector('#gifting .campaign-image'),v.gifts_image);
+  setText(document.querySelector('#events h2'),v.event_ar,v.event_en);
+  const eventImgs=document.querySelectorAll('#events .home-event-gallery img');
+  setImg(eventImgs[0],v.event_image_1);setImg(eventImgs[1],v.event_image_2);
+  setText(document.querySelector('#our-story h2'),v.story_ar,v.story_en);
+  setImg(document.querySelector('#our-story .campaign-image'),v.story_image);
+}
 async function loadAnnouncement(){if(!sb)return;const {data}=await sb.from('announcements').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).maybeSingle();const el=$('#announcement');if(el&&data){el.dataset.ar=data.text_ar||'';el.dataset.en=data.text_en||'';el.textContent=lang==='ar'?data.text_ar:data.text_en;el.classList.remove('hidden')}}
 function renderProductPage(){const el=$('#productDetail');if(!el||!allProducts.length)return;const slug=new URLSearchParams(location.search).get('slug');const p=allProducts.find(x=>x.slug===slug);if(!p){el.innerHTML=`<div class="panel">${t('العطر غير موجود','Perfume not found')}</div>`;return}const previousQty=$('#detailQty')?.value||'1';const img=productImage(p),desc=lang==='ar'?(p.description_ar||''):(p.description_en||'');const size=p.size||p.size_ml||'';el.innerHTML=`<div class="product-media">${img?`${productImgTag(p)}<span class="product-image-name product-image-name--detail">${safe(pname(p))}</span>`:safe(pname(p).slice(0,1))}</div><div><div class="eyebrow">${t('عطور نادية','NADIA’S PERFUME CART')}</div><h2>${safe(pname(p))}</h2><div class="price">${money(p.price)}</div>${size?`<div class="chips"><span class="chip">${safe(size)}${String(size).match(/^\d+$/)?t(' مل',' ml'):''}</span></div>`:''}<p>${desc?safe(desc):t('سيظهر وصف العطر الحقيقي عند إضافته من لوحة الإدارة.','The real perfume description will appear when added from the admin dashboard.')}</p><div class="row"><input id="detailQty" aria-label="${t('الكمية','Quantity')}" class="qty" type="number" min="1" value="${safe(previousQty)}"><button class="btn gold" onclick="addToCart('${safe(p.slug)}',document.getElementById('detailQty').value)">${t('أضف للسلة','Add to cart')}</button><button class="btn soft" onclick="toggleWish('${safe(p.slug)}')">♥ ${t('المفضلة','Wishlist')}</button></div></div>`}
 function renderCheckout(){const el=$('#orderSummary');if(!el)return;el.innerHTML=cart.length?cart.map(i=>{const p=allProducts.find(x=>x.slug===i.slug)||{name_ar:i.slug,name_en:i.slug};return `<div class="summary-line"><span>${safe(pname(p))} × ${i.qty}</span><span>${p.price!=null?money(Number(p.price)*i.qty):'—'}</span></div>`}).join('')+`<div class="cart-total"><span>${t('الإجمالي','Total')}</span><span>${money(cartTotal())}</span></div>`:t('السلة فارغة','Your bag is empty')}
@@ -94,7 +109,8 @@ function whatsappUrl(product){
   const message=name?t(`مرحباً عطور نادية، أود الاستفسار عن عطر «${name}».`,`Hello Nadia’s Perfume Cart, I would like to ask about “${name}”.`):
     isEvent?t('مرحباً عطور نادية، أود الاستفسار عن حجز عربة العطور لمناسبتي.','Hello Nadia’s Perfume Cart, I would like to enquire about booking the perfume cart for my event.'):
     t('مرحباً عطور نادية، أود الاستفسار عن العطور.','Hello Nadia’s Perfume Cart, I would like to enquire about your perfumes.');
-  return 'https://wa.me/201112564000?text='+encodeURIComponent(message);
+  const phone=String(window.NADIA_CMS_SETTINGS?.whatsapp||'201112564000').replace(/[^0-9]/g,'');
+  return 'https://wa.me/'+phone+'?text='+encodeURIComponent(message);
 }
 function updateWhatsApp(){
   const link=document.getElementById('floatingWhatsApp');if(!link)return;
@@ -105,3 +121,67 @@ function updateWhatsApp(){
   link.setAttribute('aria-label',label);link.title=label;
   document.getElementById('floatingWhatsAppLabel').textContent=t('واتساب','WhatsApp');
 }
+
+// ---------- CMS runtime: settings + editable page content ----------
+let nadiaCmsCache=null;
+function cmsPageKey(){
+  const file=(location.pathname.split('/').pop()||'index.html').split('?')[0];
+  const map={'story.html':'story','gifts.html':'gifts','shipping.html':'shipping','faq.html':'faq','privacy.html':'privacy','terms.html':'terms','returns.html':'returns','event-cart.html':'event_cart'};
+  return map[file]||null;
+}
+function applyCmsText(el,ar,en){
+  if(!el)return;
+  if(ar)el.dataset.ar=ar;if(en)el.dataset.en=en;
+  el.textContent=lang==='ar'?(el.dataset.ar||el.textContent):(el.dataset.en||el.textContent);
+}
+function applyCmsImage(el,url){
+  if(el&&/^https:\/\//i.test(String(url||''))){el.src=url;el.removeAttribute('srcset')}
+}
+function applyGlobalSettings(settings={}){
+  window.NADIA_CMS_SETTINGS={currency:'EGP',whatsapp:'201112564000',...settings};
+  const s=window.NADIA_CMS_SETTINGS;
+  const phone=String(s.whatsapp||'201112564000').replace(/[^0-9]/g,'');
+  document.querySelectorAll('.whatsapp-contact').forEach(a=>{
+    a.href='https://wa.me/'+phone;
+    const b=a.querySelector('bdi');if(b)b.textContent='+'+phone;
+  });
+  if(s.instagram)document.querySelectorAll('a[href*="instagram.com"]').forEach(a=>a.href=s.instagram);
+  if(s.tiktok)document.querySelectorAll('a[href*="tiktok.com"]').forEach(a=>a.href=s.tiktok);
+  document.querySelectorAll('footer .muted').forEach(el=>applyCmsText(el,s.footer_ar,s.footer_en));
+  updateWhatsApp();
+  renderProducts();renderCart();renderProductPage();renderCheckout();
+}
+function applyPageCms(page,v={}){
+  if(!page||!v)return;
+  let title=null,body=null,image=null;
+  if(page==='story'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p');image=document.querySelector('main .campaign-figure img')}
+  else if(page==='gifts'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p');image=document.querySelector('main .campaign-figure img')}
+  else if(page==='shipping'){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p')}
+  else if(page==='faq'){title=document.querySelector('main .section-head h2');body=document.querySelector('main .section-head .cms-page-intro');if(!body&&(v.body_ar||v.body_en)){const head=document.querySelector('main .section-head');if(head){body=document.createElement('p');body.className='cms-page-intro muted';head.appendChild(body)}}}
+  else if(['privacy','terms','returns'].includes(page)){title=document.querySelector('main .panel h2');body=document.querySelector('main .panel p')}
+  else if(page==='event_cart'){title=document.querySelector('.event-copy h1');body=document.querySelector('.event-copy .event-lead');image=document.querySelector('.event-photo-showcase img')}
+  applyCmsText(title,v.title_ar,v.title_en);
+  applyCmsText(body,v.body_ar,v.body_en);
+  applyCmsImage(image,v.image_url);
+  if(page==='event_cart'&&Array.isArray(v.gallery)&&v.gallery.length){
+    const imgs=Array.from(document.querySelectorAll('.event-photo-showcase img'));
+    v.gallery.slice(0,imgs.length).forEach((url,i)=>applyCmsImage(imgs[i],url));
+  }
+}
+async function loadCmsRuntime(){
+  if(!sb)return;
+  const {data,error}=await sb.from('site_content').select('key,value');
+  if(error)return;
+  nadiaCmsCache={};(data||[]).forEach(r=>nadiaCmsCache[r.key]=r.value||{});
+  applyGlobalSettings(nadiaCmsCache.settings||{});
+  const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
+  if(document.querySelector('.hero'))await loadHomeContent();
+}
+document.addEventListener('DOMContentLoaded',loadCmsRuntime);
+document.addEventListener('languagechange',()=>{
+  if(!nadiaCmsCache)return;
+  applyGlobalSettings(nadiaCmsCache.settings||{});
+  const page=cmsPageKey();if(page)applyPageCms(page,nadiaCmsCache['page_'+page]||{});
+  if(document.querySelector('.hero'))loadHomeContent();
+});
+
