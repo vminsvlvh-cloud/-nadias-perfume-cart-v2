@@ -91,14 +91,14 @@ function renderProducts(){
   body.innerHTML=rows.map(p=>{
     const available=p.active&&Number(p.stock)>0;
     const image=p.image_url||'assets/products/nadias-product-bottle.webp';
-    return \`<tr>
-      <td><img src="\${esc(image)}" alt="" loading="lazy" onerror="this.src='assets/products/nadias-product-bottle.webp'"></td>
-      <td><b>\${esc(p.name_ar)}</b><br><small>\${esc(p.name_en)}</small><br><small>\${esc(p.slug)}</small></td>
-      <td>\${adminMoney(p.price)}</td><td>\${p.stock??'—'}</td>
-      <td><span class="admin-pill \${available?'on':'off'}">\${available?txt('متوفر','Available'):txt('غير متوفر','Unavailable')}</span></td>
-      <td><div class="admin-actions"><button class="admin-btn small" onclick="editProduct('\${p.id}')">\${txt('تعديل','Edit')}</button><button class="admin-btn small" onclick="toggleAvailability('\${p.id}',\${available?'false':'true'})">\${available?txt('إخفاء','Hide'):txt('إظهار','Show')}</button></div></td>
-    </tr>\`;
-  }).join('')||\`<tr><td colspan="6">\${txt('لا توجد منتجات.','No products found.')}</td></tr>\`;
+    return `<tr>
+      <td><img src="${esc(image)}" alt="" loading="lazy" onerror="this.src='assets/products/nadias-product-bottle.webp'"></td>
+      <td><b>${esc(p.name_ar)}</b><br><small>${esc(p.name_en)}</small><br><small>${esc(p.slug)}</small></td>
+      <td>${adminMoney(p.price)}</td><td>${p.stock??'—'}</td>
+      <td><span class="admin-pill ${available?'on':'off'}">${available?txt('متوفر','Available'):txt('غير متوفر','Unavailable')}</span></td>
+      <td><div class="admin-actions"><button class="admin-btn small" onclick="editProduct('${p.id}')">${txt('تعديل','Edit')}</button><button class="admin-btn small" onclick="toggleAvailability('${p.id}',${available?'false':'true'})">${available?txt('إخفاء','Hide'):txt('إظهار','Show')}</button></div></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6">${txt('لا توجد منتجات.','No products found.')}</td></tr>`;
 }
 function newProduct(){
   A('#productForm')?.reset();setVal('#pid','');if(A('[name="active"]'))A('[name="active"]').checked=true;
@@ -108,7 +108,7 @@ function closeProductEditor(){A('#productEditor')?.classList.add('hidden');setSt
 function editProduct(id){
   const p=products.find(x=>x.id===id);if(!p)return;
   const fields=['id','slug','name_ar','name_en','price','compare_at_price','size_ml','stock','image_url','description_ar','description_en'];
-  fields.forEach(k=>{const el=A(\`[name="\${k}"]\`);if(el)el.value=p[k]??''});
+  fields.forEach(k=>{const el=A(`[name="${k}"]`);if(el)el.value=p[k]??''});
   A('[name="active"]').checked=!!p.active;A('[name="featured"]').checked=!!p.featured;
   A('#productEditor')?.classList.remove('hidden');previewProductImage();
 }
@@ -127,7 +127,7 @@ async function uploadImage(file,folder='general'){
   if(file.size>8*1024*1024)throw new Error(txt('حجم الصورة يجب ألا يتجاوز 8MB.','Image must be 8MB or smaller.'));
   const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
   const id=(crypto.randomUUID?.()||Math.random().toString(36).slice(2));
-  const path=\`\${folder}/\${Date.now()}-\${id}.\${ext}\`;
+  const path=`${folder}/${Date.now()}-${id}.${ext}`;
   const {error}=await sb.storage.from(MEDIA_BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
   if(error)throw error;
   const {data}=sb.storage.from(MEDIA_BUCKET).getPublicUrl(path);
@@ -256,7 +256,7 @@ async function loadOrders(){
 }
 function renderOrders(){
   const body=A('#ordersBody');if(!body)return;
-  body.innerHTML=orders.map(o=>\`<tr><td><b>\${esc(o.order_number)}</b></td><td>\${esc(o.customer_name)}<br><small>\${esc(o.phone)}</small></td><td>\${adminMoney(o.total)}</td><td><select onchange="setOrderStatus('\${o.id}',this.value)">\${['new','confirmed','processing','shipped','completed','cancelled'].map(s=>\`<option value="\${s}" \${o.status===s?'selected':''}>\${orderStatusLabel(s)}</option>\`).join('')}</select></td><td>\${adminDate(o.created_at)}</td></tr>\`).join('')||\`<tr><td colspan="5">\${txt('لا توجد طلبات بعد.','No orders yet.')}</td></tr>\`;
+  body.innerHTML=orders.map(o=>`<tr><td><b>${esc(o.order_number)}</b></td><td>${esc(o.customer_name)}<br><small>${esc(o.phone)}</small></td><td>${adminMoney(o.total)}</td><td><select onchange="setOrderStatus('${o.id}',this.value)">${['new','confirmed','processing','shipped','completed','cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${orderStatusLabel(s)}</option>`).join('')}</select></td><td>${adminDate(o.created_at)}</td></tr>`).join('')||`<tr><td colspan="5">${txt('لا توجد طلبات بعد.','No orders yet.')}</td></tr>`;
 }
 async function setOrderStatus(id,status){
   const {error}=await sb.from('store_orders').update({status,updated_at:new Date().toISOString()}).eq('id',id);
@@ -272,7 +272,7 @@ async function loadEvents(){
 }
 function renderEvents(){
   const body=A('#eventsBody');if(!body)return;
-  body.innerHTML=events.map(r=>\`<tr><td><b>\${esc(r.request_number)}</b></td><td>\${esc(r.customer_name)}<br><small>\${esc(r.phone)}\${r.email?'<br>'+esc(r.email):''}</small></td><td>\${esc(eventTypeLabel(r.event_type))}\${r.venue?'<br><small>'+esc(r.venue)+'</small>':''}</td><td>\${esc(r.event_date)}<br><small>\${esc(r.city)}</small></td><td>\${r.guest_count??'—'}</td><td><select onchange="setEventStatus('\${r.id}',this.value)">\${['new','contacted','planning','quoted','confirmed','completed','cancelled'].map(s=>\`<option value="\${s}" \${r.status===s?'selected':''}>\${eventStatusLabel(s)}</option>\`).join('')}</select></td><td style="min-width:240px">\${esc(r.requirements)}\${r.notes?'<br><small>'+esc(r.notes)+'</small>':''}</td></tr>\`).join('')||\`<tr><td colspan="7">\${txt('لا توجد طلبات مناسبات بعد.','No event requests yet.')}</td></tr>\`;
+  body.innerHTML=events.map(r=>`<tr><td><b>${esc(r.request_number)}</b></td><td>${esc(r.customer_name)}<br><small>${esc(r.phone)}${r.email?'<br>'+esc(r.email):''}</small></td><td>${esc(eventTypeLabel(r.event_type))}${r.venue?'<br><small>'+esc(r.venue)+'</small>':''}</td><td>${esc(r.event_date)}<br><small>${esc(r.city)}</small></td><td>${r.guest_count??'—'}</td><td><select onchange="setEventStatus('${r.id}',this.value)">${['new','contacted','planning','quoted','confirmed','completed','cancelled'].map(s=>`<option value="${s}" ${r.status===s?'selected':''}>${eventStatusLabel(s)}</option>`).join('')}</select></td><td style="min-width:240px">${esc(r.requirements)}${r.notes?'<br><small>'+esc(r.notes)+'</small>':''}</td></tr>`).join('')||`<tr><td colspan="7">${txt('لا توجد طلبات مناسبات بعد.','No event requests yet.')}</td></tr>`;
 }
 async function setEventStatus(id,status){
   const {error}=await sb.from('event_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id);
