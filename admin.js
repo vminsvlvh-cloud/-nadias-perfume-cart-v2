@@ -352,7 +352,24 @@ async function compressImage(file){
  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.84));if(!blob)throw new Error(txt('تعذر تجهيز الصورة.','Could not process image.'));if(blob.size>2*1024*1024)throw new Error(txt('الصورة كبيرة بعد الضغط؛ جرّب صورة أصغر.','Image is still too large; use a smaller image.'));return blob;
  }finally{bitmap.close();}
 }
+
+function shippingCountryName(code){try{return new Intl.DisplayNames([lang==='ar'?'ar':'en'],{type:'region'}).of(code)||code;}catch{return code;}}
+function addInternationalDestination(country=val('#internationalCountry'),fee=''){
+ if(!country||country==='EG'||A('#internationalRates').querySelector(`[data-country="${country}"]`))return;
+ const row=document.createElement('div');row.className='admin-grid-2';row.dataset.country=country;
+ row.innerHTML=`<div class="field"><label for="internationalFee-${country}">${esc(shippingCountryName(country))} — ${txt('رسوم الشحن بالجنيه المصري','Shipping fee in EGP')}</label><input id="internationalFee-${country}" type="number" min="0" max="9999999.99" step="0.01" value="${esc(fee)}" data-international-fee></div><button type="button" class="admin-btn">${txt('حذف الوجهة','Remove destination')}</button>`;
+ row.querySelector('button').onclick=()=>row.remove();A('#internationalRates').append(row);
+}
+function loadInternationalShipping(){
+ A('#internationalEnabled').checked=siteSettings.international_shipping_enabled===true;
+ const codes='AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW'.split(' ').filter(c=>c!=='EG');
+ A('#internationalCountry').innerHTML=codes.map(code=>({code,name:shippingCountryName(code)})).sort((a,b)=>a.name.localeCompare(b.name,lang)).map(c=>`<option value="${c.code}">${esc(c.name)}</option>`).join('');
+ A('#internationalRates').replaceChildren();
+ for(const r of (siteSettings.international_shipping_rates||[]))if(codes.includes(r.country))addInternationalDestination(r.country,r.fee??'');
+}
+
 function loadCommerceSettings(){
+ loadInternationalShipping();
  setVal('#settingPayment',siteSettings.payment_method||'manual');
  A('#settingCheckout').checked=siteSettings.checkout_enabled===true;A('#settingPolicies').checked=siteSettings.policies_ready===true;
  for(const country of ['EG']){const rate=(siteSettings.shipping_rates||[]).find(r=>r.country===country);A('#ship'+country).checked=!!rate;setVal('#fee'+country,rate?.fee??'');}
@@ -361,7 +378,15 @@ function loadCommerceSettings(){
 }
 function readCommerceSettings(){
  const shipping_rates=[];for(const country of ['EG'])if(checked('#ship'+country)){const value=val('#fee'+country);if(!/^\d{1,7}(\.\d{1,2})?$/.test(value))throw new Error(txt('أدخل رسوم شحن صحيحة لكل دولة مفعلة.','Enter a valid shipping fee for each enabled country.'));shipping_rates.push({country,fee:Number(value)});}
- return {shipping_rates,payment_method:val('#settingPayment'),checkout_enabled:checked('#settingCheckout'),policies_ready:checked('#settingPolicies')};
+ const international_shipping_enabled=checked('#internationalEnabled');
+ const international_shipping_rates=AA('#internationalRates [data-country]').map(row=>{
+ const fee=row.querySelector('[data-international-fee]').value;
+ if(!/^\d{1,7}(\.\d{1,2})?$/.test(fee))throw new Error(txt('أدخل رسوم شحن صحيحة لكل وجهة خارجية، أو احذف الوجهة.','Enter a valid fee for each international destination, or remove it.'));
+ return {country:row.dataset.country,fee:Number(fee)};
+ });
+ if(international_shipping_enabled&&!international_shipping_rates.length)throw new Error(txt('أضف دولة ورسوم الشحن قبل تفعيل الشحن الخارجي.','Add a destination and shipping fee before enabling international shipping.'));
+ if(international_shipping_enabled)shipping_rates.push(...international_shipping_rates);
+ return {shipping_rates,international_shipping_enabled,international_shipping_rates,payment_method:val('#settingPayment'),checkout_enabled:checked('#settingCheckout'),policies_ready:checked('#settingPolicies')};
 }
 function renderPageBlocks(key,values){
  const blocks=window.NADIA_CMS_FIELDS?.[key]||[];

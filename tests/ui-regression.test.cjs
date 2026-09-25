@@ -7,6 +7,11 @@ function context(file,sb){const elements=new Map(),memory=new Map();const docume
  el=element({hidden:false});ui.ctx.testElement=el;ui.run("applyCmsImage(testElement,'')");assert.equal(el.hidden,true);
  const btn=element(),country=element({value:'EG'});ui.elements.set('#checkoutCountry',country);ui.elements.set('#checkoutForm [type=submit]',btn);ui.elements.set('#orderSummary',element());
  ui.run("allProducts=[{id:'00000000-0000-4000-8000-000000000000',slug:'test',name_ar:'اختبار',price:100,stock:3,active:true}];productsLoaded=true;cart=[{slug:'test',qty:1}];window.NADIA_CMS_SETTINGS={currency:'EGP',checkout_enabled:true,policies_ready:true,payment_method:'manual',shipping_rates:[{country:'EG',fee:25}]};");
+ ui.run("window.NADIA_CMS_SETTINGS.shipping_rates.push({country:'FR',fee:500});");
+ assert.equal(ui.run('activeShippingRates().length'),1);
+ ui.run('window.NADIA_CMS_SETTINGS.international_shipping_enabled=true');
+ assert.equal(ui.run('activeShippingRates().length'),2);
+ ui.run('window.NADIA_CMS_SETTINGS.international_shipping_enabled=false;window.NADIA_CMS_SETTINGS.shipping_rates.pop()');
  ui.ctx.event={preventDefault(){},target:{values:{customer_name:'Test',phone:'00000000000',terms_accepted:'on'},querySelector:()=>btn}};
  await ui.run('submitOrder(event)');assert.equal(btn.disabled,false);assert.equal(btn.dataset.sending,undefined);assert.equal(ui.run('cart.length'),1);
  const admin=context('admin.js',{from(){return {select(){return this},order(){return this},range:async()=>({error:{message:'offline'}})}}});
