@@ -37,3 +37,5 @@
 .admin-body button:disabled{opacity:.6;cursor:wait}
 .admin-table-v2 tbody tr:hover{background:#f5f8f6}
 .admin-body ::selection{background:#cce7da;color:#103d30}
+
+.admin-dialog{width:min(760px,94vw);max-height:90dvh;overflow:auto;border:1px solid #c5aa76;border-radius:16px;padding:24px;background:#fff;color:#173d34}.admin-dialog::backdrop{background:rgba(0,0,0,.55)}.admin-dialog #mfaQr{max-width:220px}.admin-dialog input,.admin-dialog select{width:100%;padding:12px;margin-block:8px}.admin-dialog #mfaSecret{overflow-wrap:anywhere}#pageHistory{display:flex;gap:8px;flex-wrap:wrap}#pageBlocks:empty{display:none}.admin-actions{flex-wrap:wrap}#orderSearch{max-width:100%;min-width:0}.admin-table-v2 button{overflow-wrap:anywhere;max-width:240px}.admin-body fieldset{min-width:0}.admin-body .status-line{white-space:normal}

@@ -265,3 +265,10 @@ body:not(.admin-body).event-page #eventForm .eyebrow{color:#73552e}
 body:not(.admin-body).event-page .floating-contact{background:rgba(25,34,28,.94);border-color:var(--line)}
 body:not(.admin-body).event-page .floating-booking{background:var(--gold);color:#19221c}
 body:not(.admin-body) ::selection{background:var(--gold);color:#19221c}
+
+/* Commerce resilience and accessible interaction. */
+.form-trap{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}
+.checkout-consent{display:flex;align-items:flex-start;gap:10px;margin-block:18px}.checkout-consent input{width:auto;flex-shrink:0}
+[data-cms-block],.cms-page-intro,main .panel p{white-space:pre-line}
+button:disabled{cursor:not-allowed;opacity:.55}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #bf985e;outline-offset:3px}
+img[hidden]{display:none!important}

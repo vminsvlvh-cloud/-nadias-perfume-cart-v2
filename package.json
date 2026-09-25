@@ -1,0 +1,9 @@
+{
+  "name": "nadias-perfume-cart",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/store-core.test.cjs && node tests/ui-regression.test.cjs && python3 tests/html-check.py",
+    "check": "node --check app.js && node --check admin.js && node --check store-core.js && node --check language.js"
+  }
+}

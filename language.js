@@ -1,6 +1,6 @@
 // Shared language state for every page. Product data is never translated here.
 let lang = 'ar';
-try { lang = localStorage.getItem('nadia_lang') === 'en' ? 'en' : 'ar'; } catch (_) {}
+try { const requested=new URLSearchParams(location.search).get('lang');lang=requested==='en'||requested==='ar'?requested:(localStorage.getItem('nadia_lang')==='en'?'en':'ar'); } catch (_) {}
 const t = (ar, en) => lang === 'ar' ? ar : en;
 function translatePage() {
   document.documentElement.lang = lang;
@@ -15,8 +15,7 @@ function translatePage() {
   document.querySelectorAll('[data-alt-ar][data-alt-en]').forEach(el => {
     el.setAttribute('alt', t(el.dataset.altAr, el.dataset.altEn));
   });
-  const description = t('عطور نادية — عطور وهدايا وعربة عطور للمناسبات','Nadia’s Perfume Cart — perfumes, gifts and a bespoke event cart');
-  document.querySelectorAll('meta[name="description"],meta[property="og:description"]').forEach(el => el.setAttribute('content', description));
+  document.querySelectorAll('meta[data-ar][data-en][name="description"],meta[data-ar][data-en][property="og:description"]').forEach(el => el.setAttribute('content', t(el.dataset.ar,el.dataset.en)));
   const ogTitle = document.querySelector('title')?.textContent || t('عطور نادية','Nadia’s Perfume Cart');
   document.querySelectorAll('meta[property="og:title"]').forEach(el => el.setAttribute('content', ogTitle));
   document.querySelectorAll('[data-language-toggle]').forEach(el => {
@@ -31,6 +30,7 @@ function toggleLang() {
 function setLang(value) {
   lang = value === 'en' ? 'en' : 'ar';
   try { localStorage.setItem('nadia_lang', lang); } catch (_) {}
+  const url=new URL(location.href);url.searchParams.set('lang',lang);history.replaceState(null,'',url);
   document.dispatchEvent(new Event('languagechange'));
 }
 translatePage();
@@ -42,4 +42,5 @@ window.addEventListener('storage', event => {
     document.dispatchEvent(new Event('languagechange'));
   }
 });
+
 
