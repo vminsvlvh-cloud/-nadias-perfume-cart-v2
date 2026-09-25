@@ -185,3 +185,83 @@ footer .btn.soft{color:#f7f3ec;border-color:rgba(255,255,255,.22)}
 .whatsapp-float{box-shadow:0 12px 30px rgba(0,0,0,.18)}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero .campaign-figure,.hero .campaign-image{min-height:480px}.campaign-feature,.campaign-feature:nth-of-type(even){grid-template-columns:1fr}.campaign-feature:nth-of-type(even) .campaign-figure{order:0}.campaign-feature,.campaign-feature .campaign-figure,.campaign-feature .campaign-image{min-height:auto}.campaign-feature .campaign-image{aspect-ratio:4/3}}
 @media(max-width:560px){.hero h1{font-size:clamp(42px,12vw,58px)}.hero .campaign-figure,.hero .campaign-image{min-height:390px}.card .product-media{height:220px}.campaign-feature{margin-block:36px;border-radius:20px}.campaign-feature .campaign-copy{padding:32px 24px 38px}.campaign-feature .campaign-copy h2{font-size:34px}.campaign-gallery-grid{grid-template-columns:1fr 1fr}.section-head h2{font-size:38px}}
+
+/* Reference palette: deep botanical green, antique gold and warm sand.
+   Scoped to the storefront; the admin has its own independent palette. */
+body:not(.admin-body){
+ --forest:#19221c;--forest2:#242f27;--gold:#c6a477;--cream:#f2e7d6;
+ --ink:#25291f;--muted:#d0c5b4;--line:rgba(198,164,119,.38);
+ --danger:#a33d3d;background:var(--forest);color:var(--cream)
+}
+body:not(.admin-body) header{background:rgba(25,34,28,.96);color:var(--cream);border-bottom:1px solid var(--line)}
+body:not(.admin-body) nav a,body:not(.admin-body) .actions .btn.soft{color:var(--cream)}
+body:not(.admin-body) nav a:hover{color:var(--gold)}
+body:not(.admin-body) header .btn.soft{background:transparent;border-color:var(--line);color:var(--cream)}
+body:not(.admin-body) .section{background:var(--forest)}
+body:not(.admin-body) .hero h1,
+body:not(.admin-body) .section-head h2,
+body:not(.admin-body) .campaign-copy h2,
+body:not(.admin-body) .eyebrow,
+body:not(.admin-body) .event-page-title{color:var(--gold)}
+body:not(.admin-body) .hero p{color:var(--cream)}
+body:not(.admin-body) .muted{color:var(--muted)}
+body:not(.admin-body) .btn.gold,
+body:not(.admin-body) .campaign-feature .campaign-copy .btn.gold{
+ background:var(--gold);color:#19221c;border-color:var(--gold);box-shadow:none
+}
+body:not(.admin-body) .btn.gold:hover{background:#dbc099;border-color:#dbc099;color:#19221c}
+body:not(.admin-body) .btn.soft{background:transparent;color:var(--cream);border-color:var(--line)}
+body:not(.admin-body) .btn.soft:hover{background:rgba(198,164,119,.12)}
+body:not(.admin-body) .card,
+body:not(.admin-body) .panel,
+body:not(.admin-body) .cart-drawer,
+body:not(.admin-body) .mobile-menu,
+body:not(.admin-body) .toast{background:var(--cream);color:var(--ink);border-color:#b99c76}
+body:not(.admin-body) :is(.card,.panel,.cart-drawer,.mobile-menu) :is(h2,h3,.btn.soft,nav a){color:var(--ink)}
+body:not(.admin-body) :is(.card,.panel,.cart-drawer,.mobile-menu) .btn.soft{border-color:#9b896d}
+body:not(.admin-body) :is(.card,.panel,.cart-drawer) .muted,
+body:not(.admin-body) .meta,
+body:not(.admin-body) .event-form .hint{color:#665b4c}
+body:not(.admin-body) .price{color:var(--gold)}
+body:not(.admin-body) :is(.card,.panel,.cart-drawer) .price{color:#73552e}
+body:not(.admin-body) .card .product-media,
+body:not(.admin-body) .campaign-image,
+body:not(.admin-body) .image-preview{background:#c9b29a}
+body:not(.admin-body) .campaign-feature{background:#242f27;color:var(--cream);border-color:var(--line)}
+body:not(.admin-body) .campaign-gallery{background:#242f27}
+body:not(.admin-body) .campaign-figure{border-color:var(--line)}
+body:not(.admin-body) .hero-logo-stage,
+body:not(.admin-body) .event-visual{background:var(--forest2)}
+body:not(.admin-body) .product-image-name{background:rgba(25,34,28,.94);color:var(--gold);border-color:var(--line)}
+body:not(.admin-body) .wish{background:var(--cream);color:#73552e}
+body:not(.admin-body) .wish.active,
+body:not(.admin-body) .stock.out{color:#a33d3d}
+body:not(.admin-body) input,
+body:not(.admin-body) select,
+body:not(.admin-body) textarea{background:#fffaf2;color:var(--ink);border-color:#a99578}
+body:not(.admin-body) input::placeholder,
+body:not(.admin-body) textarea::placeholder{color:#6c6254;opacity:1}
+body:not(.admin-body) :is(input,select,textarea):focus{border-color:#92703f;box-shadow:0 0 0 3px rgba(198,164,119,.22)}
+body:not(.admin-body) :is(button,a):focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+body:not(.admin-body) :is(.panel,.card,.cart-drawer,.mobile-menu) :is(button,a):focus-visible{outline-color:#73552e}
+body:not(.admin-body) .notice{background:var(--gold);color:#19221c}
+body:not(.admin-body) footer{background:#141b16;color:var(--cream);border-top:1px solid var(--line)}
+body:not(.admin-body) footer a,
+body:not(.admin-body) footer .btn.soft{color:var(--cream)}
+body:not(.admin-body) footer .muted{color:var(--muted)}
+body:not(.admin-body) .whatsapp-float{background:#283e30;color:var(--cream);border-color:var(--line)}
+body:not(.admin-body) .whatsapp-float:hover{background:#344e3b}
+body:not(.admin-body).event-page .event-intro{background:radial-gradient(ellipse at 20% 30%,rgba(198,164,119,.09),transparent 60%)}
+body:not(.admin-body).event-page h1,
+body:not(.admin-body).event-page .event-concierge h2{color:var(--gold)}
+body:not(.admin-body).event-page :is(.event-lead,.event-caption,.event-journey p,.event-concierge>p,.concierge-note p,.concierge-phone span){color:var(--muted)}
+body:not(.admin-body).event-page .event-journey h2{color:var(--cream)}
+body:not(.admin-body).event-page :is(.event-badge,.journey-number,.concierge-star,.concierge-phone bdi,.concierge-note>span){color:var(--gold)}
+body:not(.admin-body).event-page .event-cta,
+body:not(.admin-body).event-page #eventForm button[type=submit]{background:var(--gold);border-color:var(--gold);color:#19221c}
+body:not(.admin-body).event-page #eventForm{background:var(--cream);color:var(--ink)}
+body:not(.admin-body).event-page #eventForm h2{color:var(--ink)}
+body:not(.admin-body).event-page #eventForm .eyebrow{color:#73552e}
+body:not(.admin-body).event-page .floating-contact{background:rgba(25,34,28,.94);border-color:var(--line)}
+body:not(.admin-body).event-page .floating-booking{background:var(--gold);color:#19221c}
+body:not(.admin-body) ::selection{background:var(--gold);color:#19221c}
