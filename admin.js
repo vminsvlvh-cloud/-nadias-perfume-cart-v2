@@ -355,12 +355,12 @@ async function compressImage(file){
 function loadCommerceSettings(){
  setVal('#settingPayment',siteSettings.payment_method||'manual');
  A('#settingCheckout').checked=siteSettings.checkout_enabled===true;A('#settingPolicies').checked=siteSettings.policies_ready===true;
- for(const country of ['EG','SA']){const rate=(siteSettings.shipping_rates||[]).find(r=>r.country===country);A('#ship'+country).checked=!!rate;setVal('#fee'+country,rate?.fee??'');}
+ for(const country of ['EG']){const rate=(siteSettings.shipping_rates||[]).find(r=>r.country===country);A('#ship'+country).checked=!!rate;setVal('#fee'+country,rate?.fee??'');}
  const missing=products.filter(p=>!(Number(p.price)>0&&Number(p.stock)>0&&p.image_url&&p.description_ar&&p.description_en)).length;
  A('#storeReadiness').textContent=txt(`${missing} منتج يحتاج سعرًا أو مخزونًا. أكمل السعر والمخزون والصورة والوصف لكل منتج تبيعه. اعتمد السياسات قبل تفعيل الطلبات.`,` ${missing} products need prices or stock. Add a price, stock, image and descriptions to each product you sell. Approve all policies before enabling orders.`);
 }
 function readCommerceSettings(){
- const shipping_rates=[];for(const country of ['EG','SA'])if(checked('#ship'+country)){const value=val('#fee'+country);if(!/^\d{1,7}(\.\d{1,2})?$/.test(value))throw new Error(txt('أدخل رسوم شحن صحيحة لكل دولة مفعلة.','Enter a valid shipping fee for each enabled country.'));shipping_rates.push({country,fee:Number(value)});}
+ const shipping_rates=[];for(const country of ['EG'])if(checked('#ship'+country)){const value=val('#fee'+country);if(!/^\d{1,7}(\.\d{1,2})?$/.test(value))throw new Error(txt('أدخل رسوم شحن صحيحة لكل دولة مفعلة.','Enter a valid shipping fee for each enabled country.'));shipping_rates.push({country,fee:Number(value)});}
  return {shipping_rates,payment_method:val('#settingPayment'),checkout_enabled:checked('#settingCheckout'),policies_ready:checked('#settingPolicies')};
 }
 function renderPageBlocks(key,values){

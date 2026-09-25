@@ -86,7 +86,7 @@ function selectedShipping(){const country=$('#checkoutCountry')?.value;return (c
 function renderCheckout(){
  const el=$('#orderSummary');if(!el)return;
  const settings=checkoutSettings(),select=$('#checkoutCountry');
- if(select){const previous=select.value;select.innerHTML=(settings.shipping_rates||[]).map(r=>`<option value="${safe(r.country)}">${r.country==='SA'?t('السعودية','Saudi Arabia'):t('مصر','Egypt')}</option>`).join('');if([...select.options].some(o=>o.value===previous))select.value=previous;}
+ if(select){const previous=select.value;select.innerHTML=(settings.shipping_rates||[]).filter(r=>r.country==='EG').map(r=>`<option value="${safe(r.country)}">${t('مصر','Egypt')}</option>`).join('');if([...select.options].some(o=>o.value===previous))select.value=previous;}
  const rate=selectedShipping(),enabled=settings.checkout_enabled===true&&settings.policies_ready===true&&rate&&cart.length&&productsLoaded;
  const btn=$('#checkoutForm [type=submit]');if(btn&&!btn.dataset.sending)btn.disabled=!enabled;
  const notice=$('#checkoutNotice');if(notice)notice.textContent=settings.checkout_enabled===true?'':t('الطلب عبر الموقع غير متاح حاليًا. للاستفسار تواصل معنا عبر واتساب.','Online ordering is currently unavailable. Please enquire on WhatsApp.');
